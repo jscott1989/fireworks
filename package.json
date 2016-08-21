@@ -8,6 +8,7 @@
   "author": "Jonathan Scott <jonathan@jscott.me>",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.15.0",
     "phaser": "^2.6.1",
     "recorderjs": "^1.0.1"
   },

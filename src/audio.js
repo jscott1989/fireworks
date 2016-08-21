@@ -1,12 +1,13 @@
 /**
  * This manages the recorded audio. It plays outside of the phaser game.
  */
-
+import _ from 'lodash';
+import recording from "./uis/recording";
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;
 
-var mediaRecorder;
+var sounds = {};
 
 module.exports = {
     init() {
@@ -14,7 +15,7 @@ module.exports = {
          * We want permission to record from the start - so prompt here.
          */
         navigator.getUserMedia({ audio: true }, (stream) => {
-             mediaRecorder = new MediaRecorder(stream, {mineType: "audio/webm"});
+             window.mediaRecorder = new MediaRecorder(stream, {mineType: "audio/webm"});
         }, (error) => {
             // TODO: Deal with error
         });
@@ -24,44 +25,23 @@ module.exports = {
      * Play an audio, or prompt for new if needed
      */
     playOriginal(key) {
-
+        if (_.has(sounds, key)) {
+            var audio = new Audio(sounds[key]);
+            audio.play();
+        } else {
+            // We haven't got a sound - need to prompt for one
+            this.promptForSound(key);
+        }
     },
 
+    promptForSound(key) {
+        // Show an overlay to prompt for sound
+        recording.open((url) => {
+            console.log("Setting ", key, url);
+            sounds[key] = url;
 
-    record() {
-        mediaRecorder.reset();
-        var chunks = [];
-
-        
-        mediaRecorder.start();
-
-        setTimeout(() => {
-            mediaRecorder.stop();
-        }, 5000);
-
-        mediaRecorder.ondataavailable = (e) => {
-            chunks.push(e.data);
-        }
-
-        mediaRecorder.onerror = (e) => {
-            console.log('Error: ', e);
-        };
-
-        mediaRecorder.onstart = () => {
-            console.log('Started, state = ' + mediaRecorder.state);
-        };
- 
-        mediaRecorder.onstop = () => {
-            console.log('Stopped, state = ' + mediaRecorder.state);
-
-            var blob = new Blob(chunks, {type: "audio/webm"});
-            chunks = [];
-
-            var url = window.URL.createObjectURL(blob);
-        }
-        
-        mediaRecorder.onwarning = (e) => {
-            console.log('Warning: ' + e);
-        };
-    }
+            var audio = new Audio(sounds[key]);
+            audio.play();
+        });
+    },
 }

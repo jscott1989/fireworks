@@ -1,6 +1,7 @@
 /**
  * Game state
  */
+ import audio from "../audio";
 
 module.exports = {
     create() {
@@ -48,8 +49,9 @@ module.exports = {
         }
 
         if (this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
+            // Jump
             this.player.body.velocity.y = -250;
-            // jumpTimer = game.time.now + 750;
+            audio.playOriginal("jump");
         }
     }
 }

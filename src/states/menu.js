@@ -2,6 +2,8 @@
  * Main Menu
  */
 
+ import audio from "../audio";
+
 module.exports = {
     create() {
         const nameLabel = game.add.text(80, 80, "Fireworks",
@@ -12,6 +14,7 @@ module.exports = {
         var wkey = game.input.keyboard.addKey(Phaser.Keyboard.W);
 
         wkey.onDown.addOnce(this.start, this);
+        audio.init();
         game.state.start("play");
     },
 
