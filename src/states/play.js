@@ -14,12 +14,17 @@ module.exports = {
         const level1 = game.add.tilemap('level1');
         level1.addTilesetImage('level1-tiles', 'level1-tiles');
 
-        const farLayer = level1.createLayer('far');
-        farLayer.resizeWorld();
-        farLayer.scrollFactorX = 0.5;
-        farLayer.scrollFactorY = 0.9;
+        const far1Layer = level1.createLayer('far1');
+        far1Layer.resizeWorld();
+        far1Layer.scrollFactorX = 0.5;
+        far1Layer.scrollFactorY = 0.9;
 
-        const nearLayer = level1.createLayer('near');
+        const far2Layer = level1.createLayer('far2');
+        far2Layer.scrollFactorX = 0.5;
+        far2Layer.scrollFactorY = 0.9;
+
+        const near1Layer = level1.createLayer('near1');
+        const near2Layer = level1.createLayer('near2');
 
         // nearLayer.scrollFactorX = 0.8;
 
@@ -27,11 +32,13 @@ module.exports = {
         level1.setCollisionByExclusion([], true, 'level1');
         game.physics.enable(this.level1_level, Phaser.Physics.ARCADE);
 
+        this.level2_level = level1.createLayer('level2');
+
         this.player = game.add.sprite(16, 16, "character");
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
         this.player.body.gravity.y = 300;
 
-        this.player.body.collideWorldBounds = true;
+        const front = level1.createLayer('front');
 
         game.camera.follow(this.player);
     },
