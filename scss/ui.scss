@@ -20,3 +20,49 @@
 
     background-color: red;
 }
+
+#drawing-ui {
+    width: 700px;
+    height: 400px;
+
+    background-color: red;
+
+    canvas {
+        background: white;
+        width: 320px;
+        height: 320px;
+    }
+
+    .toolbox {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 100px;
+        background: orange;
+        height: 300px;
+    }
+
+    .colour {
+        width: 32px;
+        height: 32px;
+
+        &.active {
+            border: 2px solid red;
+            width: 28px;
+            height: 28px;
+        }
+    }
+
+    .tool {
+        width: 32px;
+        height: 32px;
+        background: #FFF;
+        text-align: center;
+
+        &.active {
+            border: 2px solid red;
+            width: 28px;
+            height: 28px;
+        }
+    }
+}

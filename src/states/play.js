@@ -2,6 +2,7 @@
  * Game state
  */
  import audio from "../audio";
+ import drawing from "../uis/drawing";
 
 module.exports = {
     create() {
@@ -16,6 +17,7 @@ module.exports = {
         const farLayer = level1.createLayer('far');
         farLayer.resizeWorld();
         farLayer.scrollFactorX = 0.5;
+        farLayer.scrollFactorY = 0.9;
 
         const nearLayer = level1.createLayer('near');
 
@@ -51,7 +53,8 @@ module.exports = {
         if (this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
             // Jump
             this.player.body.velocity.y = -250;
-            audio.playOriginal("jump");
+            // audio.playOriginal("jump");
+            // drawing.open(64, 64, () => {});
         }
     }
 }
