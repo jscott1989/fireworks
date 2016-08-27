@@ -14,6 +14,20 @@
     display: none;
 }
 
+#narration-ui {
+    width: 400px;
+    height: 300px;
+
+    background-color: red;
+}
+
+#text-input-ui {
+    width: 400px;
+    height: 300px;
+
+    background-color: red;
+}
+
 #recording-ui {
     width: 400px;
     height: 300px;
@@ -27,10 +41,19 @@
 
     background-color: red;
 
-    canvas {
-        background: white;
-        width: 320px;
-        height: 320px;
+    .canvas-container {
+        position: relative;
+        // width: 320px;
+        // height: 320px;
+        margin: auto;
+
+        canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+
+            cursor: pointer;
+        }
     }
 
     .toolbox {
@@ -45,6 +68,8 @@
     .colour {
         width: 32px;
         height: 32px;
+        float: left;
+        cursor: pointer;
 
         &.active {
             border: 2px solid red;
@@ -58,6 +83,8 @@
         height: 32px;
         background: #FFF;
         text-align: center;
+        cursor: pointer;
+        clear: both;
 
         &.active {
             border: 2px solid red;

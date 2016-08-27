@@ -8,6 +8,7 @@
   "author": "Jonathan Scott <jonathan@jscott.me>",
   "license": "MIT",
   "dependencies": {
+    "floodfill": "^2.1.0",
     "lodash": "^4.15.0",
     "phaser": "^2.6.1"
   },

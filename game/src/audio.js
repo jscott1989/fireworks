@@ -15,7 +15,16 @@ module.exports = {
          * We want permission to record from the start - so prompt here.
          */
         navigator.getUserMedia({ audio: true }, (stream) => {
-             window.mediaRecorder = new MediaRecorder(stream, {mineType: "audio/webm"});
+            window.mediaStream = stream;
+            window.mediaRecorder = new MediaRecorder(stream, {mineType: "audio/webm"});
+
+            var ctx = new AudioContext();
+            var audioSrc = ctx.createMediaStreamSource(mediaStream);
+            window.audioAnalyser = ctx.createAnalyser();
+            audioSrc.connect(audioAnalyser);
+
+            window.frequencyData = new Uint8Array(audioAnalyser.frequencyBinCount);
+
         }, (error) => {
             // TODO: Deal with error
         });
@@ -44,4 +53,18 @@ module.exports = {
             audio.play();
         });
     },
+
+    narrate(set) {
+        if (set.length > 0) {
+            const s = set.shift();
+            this.narrateOne(s[0], s[1], () => {
+                this.narrate(set);
+            });
+        }
+    },
+
+    narrateOne(text, soundFiles, callback) {
+        console.log(text);
+        callback();
+    }
 }

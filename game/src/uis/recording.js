@@ -33,18 +33,12 @@ module.exports = {
     },
 
     onStartRecordingPressed() {
-        let self = this;
-
-        console.log("START RECORDING!");
         // mediaRecorder.reset();
         var chunks = [];
-
-        mediaRecorder.ignoreMutedMedia = true;
         
         mediaRecorder.start();
 
         mediaRecorder.ondataavailable = (e) => {
-            console.log(e.data);
             chunks.push(e.data);
         }
 
@@ -57,8 +51,6 @@ module.exports = {
         };
  
         mediaRecorder.onstop = () => {
-            console.log('Stopped, state = ' + mediaRecorder.state);
-
             var blob = new Blob(chunks, {type: "audio/webm"});
             chunks = [];
 
@@ -77,6 +69,5 @@ module.exports = {
 
     onStopRecordingPressed() {
         mediaRecorder.stop();
-        console.log("STOP RECORDING!");
     }
 }

@@ -3,6 +3,7 @@
  */
  import audio from "../audio";
  import drawing from "../uis/drawing";
+ import text from "../uis/text";
 
 module.exports = {
     create() {
@@ -34,7 +35,7 @@ module.exports = {
 
         this.level2_level = level1.createLayer('level2');
 
-        this.player = game.add.sprite(16, 16, "character");
+        this.player = game.add.sprite(16, 396, "character");
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
         this.player.body.gravity.y = 300;
 
@@ -61,7 +62,17 @@ module.exports = {
             // Jump
             this.player.body.velocity.y = -250;
             // audio.playOriginal("jump");
-            // drawing.open(64, 64, () => {});
+            // drawing.open(32, 16, null, (url) => {
+            //     console.log("Got", url);
+            // });
+            audio.narrate([
+                ["Hello", []],
+                ["1", []],
+                ["2", []],
+            ]);
+            // text.open((txt) => {
+            //     console.log(txt);
+            // })
         }
     }
 }
