@@ -33,6 +33,10 @@
         }
     }
 
+    .body {
+        margin-top: 20px;
+    }
+
     footer {
         position: absolute;
         bottom: 0px;
@@ -55,6 +59,10 @@
 #recording-ui {
     width: 400px;
     height: 300px;
+
+    .status {
+        text-align: center;
+    }
 }
 
 #drawing-ui {

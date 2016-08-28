@@ -46,9 +46,6 @@ module.exports = {
 
     update() {
         game.physics.arcade.collide(this.player, this.level1_level);
-        // game.physics.arcade.overlap(this.player, this.win, () => {
-        //     console.log("WIN");
-        // }, null, this);
 
         if (this.keyboard.isDown(Phaser.Keyboard.A)) {
             this.player.body.velocity.x = -175;
@@ -61,7 +58,7 @@ module.exports = {
         if (this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
             // Jump
             this.player.body.velocity.y = -250;
-            // audio.playOriginal("jump");
+            audio.playOriginal("jump");
             // drawing.open(32, 16, null, (url) => {
             //     console.log("Got", url);
             // });
@@ -71,9 +68,9 @@ module.exports = {
             //     ["2", []],
             // ]);
 
-            text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
-                console.log(babyname);
-            });
+            // text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
+            //     console.log(babyname);
+            // });
         }
     }
 }
