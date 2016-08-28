@@ -33,20 +33,19 @@ module.exports = {
     /**
      * Play an audio, or prompt for new if needed
      */
-    playOriginal(key) {
+    playOriginal(key, title, instruction) {
         if (_.has(sounds, key)) {
             var audio = new Audio(sounds[key]);
             audio.play();
         } else {
             // We haven't got a sound - need to prompt for one
-            this.promptForSound(key);
+            this.promptForSound(key, title, instruction);
         }
     },
 
-    promptForSound(key) {
+    promptForSound(key, title, instruction) {
         // Show an overlay to prompt for sound
-        recording.open((url) => {
-            console.log("Setting ", key, url);
+        recording.open(title, instruction, (url) => {
             sounds[key] = url;
 
             var audio = new Audio(sounds[key]);

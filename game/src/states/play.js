@@ -4,6 +4,7 @@
  import audio from "../audio";
  import drawing from "../uis/drawing";
  import text from "../uis/text";
+ import setTileCollision from '../lib/set-tile-collision';
 
 module.exports = {
     create() {
@@ -35,13 +36,17 @@ module.exports = {
 
         this.level2_level = level1.createLayer('level2');
 
-        this.player = game.add.sprite(16, 396, "character");
+        this.player = game.add.sprite(64, 396, "character");
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
         this.player.body.gravity.y = 300;
 
         const front = level1.createLayer('front');
 
         game.camera.follow(this.player);
+
+
+        // Set up special platforms
+        setTileCollision(this.level1_level, [137], {top: true, bottom: false, left: false, right: false});
     },
 
     update() {
@@ -57,16 +62,16 @@ module.exports = {
 
         if (this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
             // Jump
-            this.player.body.velocity.y = -250;
-            audio.playOriginal("jump");
-            // drawing.open(32, 16, null, (url) => {
+            // this.player.body.velocity.y = -250;
+            // audio.playOriginal("jump", "Jump Sound", "Please record the sound of this character jumping");
+            // drawing.open("Draw hat", "Draw a hat...", 32, 16, "/s/assets/hat_guide.png", (url) => {
             //     console.log("Got", url);
             // });
-            // audio.narrate([
-            //     ["Hello", []],
-            //     ["1", []],
-            //     ["2", []],
-            // ]);
+            audio.narrate([
+                ["Hello", []],
+                ["1", []],
+                ["2", []],
+            ]);
 
             // text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
             //     console.log(babyname);

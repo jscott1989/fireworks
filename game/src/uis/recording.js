@@ -13,6 +13,8 @@ var isCountingDown = false;
 var recordingCountdown = 3;
 var countdownTimeout;
 
+var beepAudio = new Audio("/s/assets/ui/beep.mp3");
+var playingAudio;
 var url;
 
 const closeUI = () => {
@@ -28,6 +30,7 @@ const startRecordingCountdown = () => {
     statusText.innerHTML = "Starting recording in 3";
     document.addEventListener("keyup", keyup);
     container.querySelector(".complete-controls").style.display = "none";
+    beepAudio.play();
     countdownTimeout = setTimeout(countdown, 1000);
 };
 
@@ -43,6 +46,7 @@ const countdown = () => {
         isCountingDown = false;
         startRecording();
     } else {
+        beepAudio.play();
         countdownTimeout = setTimeout(countdown, 1000);
     }
 }
@@ -76,7 +80,6 @@ const keyup = (e) => {
 
 const startRecording = () => {
     // mediaRecorder.reset();
-    countup();
     var chunks = [];
     
     mediaRecorder.start();
@@ -91,6 +94,7 @@ const startRecording = () => {
 
     mediaRecorder.onstart = () => {
         // console.log('Started, state = ' + mediaRecorder.state);
+        countup();
     };
 
     mediaRecorder.onstop = () => {
@@ -98,6 +102,8 @@ const startRecording = () => {
         chunks = [];
 
         url = window.URL.createObjectURL(blob);
+
+        play();
 
         resetAfterStop();
     };
@@ -137,19 +143,36 @@ const save = () => {
 }
 
 const play = () => {
-
+    playingAudio = new Audio(url);
+    playingAudio.play();
+    container.querySelector(".play").innerHTML = "Stop";
+    playingAudio.addEventListener("ended", () => {
+        playingAudio = null;
+        container.querySelector(".play").innerHTML = "Play";
+    })
 }
 
 const stopPlaying = () => {
+    playingAudio.pause();
+    playingAudio = null;
+    container.querySelector(".play").innerHTML = "Play";
+}
 
+const playPressed = () => {
+    if (playingAudio == null) {
+        play();
+    } else {
+        stopPlaying();
+    }
 }
 
 const reset = () => {
-    
+    url = null;
+    resetAfterStop();
 }
 
 module.exports = {
-    open(c) {
+    open(title, instruction, c) {
         callback = c;
         if (container == null) {
             container = document.getElementById("recording-ui");
@@ -158,12 +181,15 @@ module.exports = {
             // Reset the state of the menu
 
             // Bind buttons
-            // container.querySelector(".start-recording").addEventListener("click", this.onStartRecordingPressed);
-            // container.querySelector(".stop-recording").addEventListener("click", this.onStopRecordingPressed);
+            container.querySelector(".save").addEventListener("click", save);
+            container.querySelector(".play").addEventListener("click", playPressed);
+            container.querySelector(".reset").addEventListener("click", reset);
 
 
         }
 
+        container.querySelector("h1").innerHTML = title;
+        container.querySelector("p").innerHTML = instruction;
         isRecording = false;
         recordingCountdown = 3;
         game.paused = true;

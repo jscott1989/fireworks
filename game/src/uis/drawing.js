@@ -53,6 +53,7 @@ const MAX_CANVAS_HEIGHT = 350;
 
 
 var pixelSize;
+var guideImage = new Image();
 
 // On-screen elements
 var overCanvas;
@@ -125,7 +126,7 @@ const drawOverlay = () => {
 }
 
 module.exports = {
-    open(width, height, guide, callback) {
+    open(title, instruction, width, height, guide, callback) {
         if (container == null) {
             container = document.getElementById("drawing-ui");
             overCanvas = container.querySelector(".over-canvas");
@@ -137,6 +138,7 @@ module.exports = {
             gridCheckbox = container.querySelector(".show-grid");
 
             // Create colours
+            var i = 0;
             const colourContainer = container.querySelector(".colours");
             _.each([
                     "#FFF",
@@ -161,8 +163,14 @@ module.exports = {
                     "#DDD",
                     "#AAA"
                 ], (colour) => {
+                    i += 1;
                     const elem = document.createElement("div");
                     elem.className = "colour";
+
+                    if (i % 3 == 0) {
+                        elem.className += " third";
+                    }
+
                     elem.style.backgroundColor = colour;
                     elem.dataset.colour = colour;
 
@@ -171,6 +179,9 @@ module.exports = {
                     })
                     colourContainer.appendChild(elem);
             });
+            var clear = document.createElement("div");
+            clear.className = "clear";
+            colourContainer.appendChild(clear);
 
             // Set up tools
             _.each(container.querySelectorAll(".tool"), (el) => {
@@ -195,6 +206,9 @@ module.exports = {
                 });
             });
         }
+
+        container.querySelector("h1").innerHTML = title;
+        container.querySelector("p").innerHTML = instruction;
 
         canvas.width = width;
         canvas.height = height;
@@ -244,12 +258,35 @@ module.exports = {
             }
         });
 
+        // Draw the guide if needed
+        if (guide != null) {
+
+            guideImage.onload = () => {
+                var tmpCanvas = document.createElement('canvas');
+                tmpCanvas.width = guideImage.width;
+                tmpCanvas.height = guideImage.height;
+                tmpCanvas.getContext('2d').drawImage(guideImage, 0, 0, guideImage.width, guideImage.height);
+                var tmpContext = tmpCanvas.getContext('2d');
+                underCanvasContext.fillStyle = "rgba(48,48,48, 0.8)";
+
+                _.each(_.range(width), (x) => {
+                    _.each(_.range(height), (y) => {
+                        if (tmpContext.getImageData(x, y, 1, 1).data[3] > 0) {
+                            // It's visible
+                            underCanvasContext.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                        }
+                    });
+                });
+            }
+            guideImage.src = guide;
+        }
+
         // Clear the display and drawing canvas
         displayCanvasContext.clearRect(0, 0, rect.width, rect.height);
         canvasContext.clearRect(0, 0, width, height);
 
-        // Don't enable the grid by default for large images (too hard to see)
-        container.querySelector(".show-grid").checked = (width <= 32 && height <= 32);
+        // Don't enable the grid by default
+        container.querySelector(".show-grid").checked = false;
 
         // Draw the grid over the canvas
         drawOverlay();
