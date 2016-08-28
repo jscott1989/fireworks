@@ -65,14 +65,15 @@ module.exports = {
             // drawing.open(32, 16, null, (url) => {
             //     console.log("Got", url);
             // });
-            audio.narrate([
-                ["Hello", []],
-                ["1", []],
-                ["2", []],
-            ]);
-            // text.open((txt) => {
-            //     console.log(txt);
-            // })
+            // audio.narrate([
+            //     ["Hello", []],
+            //     ["1", []],
+            //     ["2", []],
+            // ]);
+
+            text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
+                console.log(babyname);
+            });
         }
     }
 }
