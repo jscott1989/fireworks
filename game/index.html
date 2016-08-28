@@ -1,0 +1,87 @@
+{% load staticfiles %}
+<!doctype html> 
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8" />
+    <title>Fireworks</title>
+    <script src="{% static "node_modules/phaser/build/phaser.min.js" %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+    <script src="{% static "build/main.js" %}"></script>
+</head>
+<body>
+    <div id="game"></div>
+    <div id="ui">
+        <div class="ui" id="drawing-ui">
+            <div class="instructions">
+                <p>test</p>
+            </div>
+            <div class="canvas-container">
+                <canvas width="320" height="320" class="under-canvas"></canvas>
+                <canvas width="320" height="320" class="display-canvas"></canvas>
+                <canvas width="320" height="320" class="over-canvas"></canvas>
+            </div>
+
+            <div class="toolbox">
+                <div class="colours">
+                    
+                </div>
+
+                <div class="tools">
+                    <div class="tool" data-tool="pencil">P</div>
+                    <div class="tool" data-tool="brush">B</div>
+                    <div class="tool" data-tool="fill">F</div>
+                    <div class="tool" data-tool="eraser">E</div>
+                </div>
+
+                <div class="options">
+                    <label><input type="checkbox" class="show-grid" checked>Grid</label>
+                    <button class="reset">Reset</button>
+                    <button class="save">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui" id="text-input-ui">
+            <header>
+                <h1>Baby Name</h1>
+            </header>
+            <form>
+                <div class="body">
+                    <div class="instructions">
+                        <p>What is the name of your baby?</p>
+                    </div>
+                    <div class="input">
+                        <input type="text" name="input" class="text" autocomplete="off">
+                    </div>
+                </div>
+                <footer>
+                    <button class="save right" type="submit">Save</button>
+                </footer>
+            </form>
+        </div>
+
+        <div class="ui" id="recording-ui">
+            <header>
+                <h1>Record Sound</h1>
+            </header>
+            <div class="body">
+                <img class="record-status" src="/s/assets/ui/microphone.png">
+
+                <p class="status">Hold Space to start recording</p>
+                <div class="complete-controls">
+                    <button class="play">Play</button>
+                    <button class="reset">Reset</button>
+                    <button class="save">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui" id="narration-ui">
+            <p>Test test blah</p>
+        </div>
+    </div>
+
+
+    <!-- <div>Icons made by <a href="http://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div> -->
+</body>
+</html>

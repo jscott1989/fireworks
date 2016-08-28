@@ -1,2 +1,6 @@
-/build
-/node_modules
+/game/build
+/game/node_modules
+/db.sqlite3
+/ve
+__pycache__
+.DS_Store
