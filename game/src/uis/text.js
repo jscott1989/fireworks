@@ -61,8 +61,8 @@ module.exports = {
     },
 
     onSavePressed(e) {
-        callback(container.querySelector("input").value);
-        closeUI();
         e.preventDefault();
+        closeUI();
+        callback(container.querySelector("input").value);
     }
 }

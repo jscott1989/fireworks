@@ -201,8 +201,8 @@ module.exports = {
 
             container.querySelector(".save").addEventListener("click", () => {
                 canvas.toBlob((blob) => {
-                    callback(window.URL.createObjectURL(blob));
                     closeUI();
+                    callback(window.URL.createObjectURL(blob));
                 });
             });
         }

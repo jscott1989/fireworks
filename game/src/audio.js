@@ -8,7 +8,7 @@ import narrate from "./uis/narrate";
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;
 
-var sounds = {};
+window.sounds = {};
 
 module.exports = {
     init() {
@@ -40,18 +40,23 @@ module.exports = {
             audio.play();
         } else {
             // We haven't got a sound - need to prompt for one
-            this.promptForSound(key, title, instruction);
+            this.promptForSound(key, title, instruction, () => {
+                var audio = new Audio(sounds[key]);
+                audio.play();
+            });
         }
     },
 
-    promptForSound(key, title, instruction) {
+    promptForSound(key, title, instruction, callback) {
         // Show an overlay to prompt for sound
-        recording.open(title, instruction, (url) => {
-            sounds[key] = url;
-
-            var audio = new Audio(sounds[key]);
-            audio.play();
-        });
+        if (_.has(sounds, key)) {
+            callback();
+        } else {
+            recording.open(title, instruction, (url) => {
+                sounds[key] = url;
+                callback();
+            });
+        }
     },
 
     narrate(set) {

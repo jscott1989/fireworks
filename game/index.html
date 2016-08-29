@@ -6,6 +6,9 @@
     <title>Fireworks</title>
     <script src="{% static "node_modules/phaser/build/phaser.min.js" %}"></script>
     <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+    <script>
+        var data = {{data|safe}};
+    </script>
     <script src="{% static "build/main.js" %}"></script>
 </head>
 <body>

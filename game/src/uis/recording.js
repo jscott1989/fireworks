@@ -2,6 +2,8 @@
  * The recording UI
  */
 
+import ui from './ui';
+
 var container;
 var statusText;
 
@@ -138,8 +140,8 @@ const stopRecording = () => {
 };
 
 const save = () => {
-    callback(url);
     closeUI();
+    callback(url);
 }
 
 const play = () => {
@@ -188,8 +190,8 @@ module.exports = {
 
         }
 
-        container.querySelector("h1").innerHTML = title;
-        container.querySelector("p").innerHTML = instruction;
+        container.querySelector("h1").innerHTML = ui.parseText(title);
+        container.querySelector("p").innerHTML = ui.parseText(instruction);
         isRecording = false;
         recordingCountdown = 3;
         game.paused = true;

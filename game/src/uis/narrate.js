@@ -2,12 +2,14 @@
  * The narration UI
  */
 
+import ui from './ui';
+
 var container;
-var text;
+var textContainer;
 
 var callback;
 
-var audio;
+var audioPlayer;
 var audioFiles;
 
 const close = () => {
@@ -16,15 +18,16 @@ const close = () => {
 
     container.style.display = "none";
     game.paused = false;
-    audio.pause();
+    audioPlayer.pause();
     callback();
 }
 
 const play = () => {
     if (audioFiles.length > 0) {
-        audio = new Audio(audioFiles.shift());
-        audio.addEventListener("ended", play);
-        audio.play();
+        var a = ui.parseSound(audioFiles.shift());
+        audioPlayer = new Audio(a);
+        audioPlayer.addEventListener("ended", play);
+        audioPlayer.play();
     }
 }
 
@@ -34,14 +37,16 @@ module.exports = {
         callback = c;
         if (container == null) {
             container = document.getElementById("narration-ui");
-            text = container.querySelector("p");
+            textContainer = container.querySelector("p");
             // Reset the state of the menu
         }
 
-        document.addEventListener('click', close);
-        document.addEventListener('keydown', close);
+        setTimeout(() => {
+            document.addEventListener('click', close);
+            document.addEventListener('keydown', close);
+        }, 500);
 
-        text.innerHTML = textStr;
+        textContainer.innerHTML = ui.parseText(textStr);
         game.paused = true;
         container.style.display = "block";
         play();
