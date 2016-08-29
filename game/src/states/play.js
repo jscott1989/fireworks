@@ -62,16 +62,16 @@ module.exports = {
 
         if (this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
             // Jump
-            // this.player.body.velocity.y = -250;
+            this.player.body.velocity.y = -250;
             // audio.playOriginal("jump", "Jump Sound", "Please record the sound of this character jumping");
             // drawing.open("Draw hat", "Draw a hat...", 32, 16, "/s/assets/hat_guide.png", (url) => {
             //     console.log("Got", url);
             // });
-            audio.narrate([
-                ["Hello", []],
-                ["1", []],
-                ["2", []],
-            ]);
+            // audio.narrate([
+            //     ["Once upon a time there was a baby named <strong>Jonny</strong>. Test One Two Three", ["/s/assets/narration/onceuponatime.wav", "/s/assets/narration/jonny.wav", "/s/assets/narration/test.wav"]],
+            //     ["1", []],
+            //     ["2", []],
+            // ]);
 
             // text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
             //     console.log(babyname);

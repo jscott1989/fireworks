@@ -48,8 +48,16 @@
 }
 
 #narration-ui {
-    width: 400px;
-    height: 300px;
+    width: 600px;
+    height: 100px;
+
+    margin: 0px auto 0px auto;
+    top: auto;
+    bottom: 10px;
+
+    strong {
+        color: blue;
+    }
 }
 
 #text-input-ui {

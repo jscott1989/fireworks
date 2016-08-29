@@ -3,6 +3,7 @@
  */
 import _ from 'lodash';
 import recording from "./uis/recording";
+import narrate from "./uis/narrate";
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;
@@ -56,14 +57,9 @@ module.exports = {
     narrate(set) {
         if (set.length > 0) {
             const s = set.shift();
-            this.narrateOne(s[0], s[1], () => {
+            narrate.open(s[0], s[1], () => {
                 this.narrate(set);
             });
         }
-    },
-
-    narrateOne(text, soundFiles, callback) {
-        console.log(text);
-        callback();
     }
 }
