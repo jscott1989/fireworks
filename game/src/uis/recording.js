@@ -21,6 +21,7 @@ var url;
 
 const closeUI = () => {
     document.removeEventListener('keydown', keydown);
+    container.innerHTML = container.innerHTML;
     container.style.display = "none";
     game.paused = false;
 }
@@ -177,19 +178,15 @@ const reset = () => {
 module.exports = {
     open(title, instruction, c) {
         callback = c;
-        if (container == null) {
-            container = document.getElementById("recording-ui");
-            statusText = container.querySelector(".status");
+        container = document.getElementById("recording-ui");
+        statusText = container.querySelector(".status");
 
-            // Reset the state of the menu
+        // Reset the state of the menu
 
-            // Bind buttons
-            container.querySelector(".save").addEventListener("click", save);
-            container.querySelector(".play").addEventListener("click", playPressed);
-            container.querySelector(".reset").addEventListener("click", reset);
-
-
-        }
+        // Bind buttons
+        container.querySelector(".save").addEventListener("click", save);
+        container.querySelector(".play").addEventListener("click", playPressed);
+        container.querySelector(".reset").addEventListener("click", reset);
 
         container.querySelector("h1").innerHTML = ui.parseText(title);
         container.querySelector("p").innerHTML = ui.parseText(instruction);

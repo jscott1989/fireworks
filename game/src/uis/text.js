@@ -42,12 +42,10 @@ module.exports = {
 
     open(title, instruction, c) {
         callback = c;
-        if (container == null) {
-            container = document.getElementById("text-input-ui");
+        container = document.getElementById("text-input-ui");
 
-            // Bind buttons
-            container.querySelector("form").addEventListener("submit", this.onSavePressed);
-        }
+        // Bind buttons
+        container.querySelector("form").addEventListener("submit", this.onSavePressed);
 
         // Reset the state of the menu
         container.querySelector("h1").innerHTML = title;
@@ -60,13 +58,10 @@ module.exports = {
         container.querySelector("input").focus();
     },
 
-    close() {
-        closeUI();
-    },
-
     onSavePressed(e) {
         e.preventDefault();
         closeUI();
         callback(container.querySelector("input").value);
+        container.innerHTML = container.innerHTML;
     }
 }

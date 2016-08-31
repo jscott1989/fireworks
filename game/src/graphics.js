@@ -47,5 +47,60 @@ module.exports = {
         };
 
         loadFiles(files);
+    },
+
+
+    modifyTilesheet(tiles) {
+        // Override tiles as specified
+
+        const id = v4();
+
+        var image = new Image();
+        image.onload = () => {
+            image.onload = () => {};
+
+            var canvas = document.createElement('canvas');
+            // document.querySelector("body").appendChild(canvas);
+            canvas.width = image.width;
+            canvas.height = image.height;
+            var canvasContext = canvas.getContext('2d');
+
+            canvasContext.drawImage(image, 0, 0, image.width, image.height);
+
+            const loadTile = (tiles) => {
+                if (tiles.length == 0) {
+                    canvas.toBlob((blob) => {
+                        game.load.image(id, window.URL.createObjectURL(blob));
+                        game.load.onLoadComplete.addOnce(() => {
+                            level1.addTilesetImage('level1-tiles', id);
+                            _.each(level1.layers, (layer) => {
+                                layer.dirty = true;
+                            });
+                        })
+                        game.load.start();
+                    });
+                    return;
+                }
+
+                var tile = tiles.shift();
+                var image = new Image();
+                image.onload = () => {
+                    canvasContext.drawImage(image, tile[1], tile[2], image.width, image.height);
+                    loadTile(tiles);
+                }
+                image.src = tile[0];
+                if (image.complete) {
+                  image.onload();
+                }
+
+            }
+
+            loadTile(tiles);
+        }
+
+        image.src = "/s/assets/level1-tiles.png";
+        if (image.complete) {
+          image.onload();
+        }
     }
 }

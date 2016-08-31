@@ -9,7 +9,7 @@ var container;
 var selectedColour;
 var selectedTool;
 
-var drawings = {};
+window.drawings = {};
 
 
 const tools = {
@@ -87,6 +87,7 @@ const selectTool = (tool) => {
 };
 
 const closeUI = () => {
+    container.innerHTML = container.innerHTML;
     container.style.display = "none";
     game.paused = false;
 };
@@ -138,86 +139,85 @@ module.exports = {
             return;
         }
 
-        if (container == null) {
-            container = document.getElementById("drawing-ui");
-            overCanvas = container.querySelector(".over-canvas");
-            overCanvasContext = overCanvas.getContext('2d');
-            underCanvas = container.querySelector(".under-canvas");
-            underCanvasContext = underCanvas.getContext('2d');
-            displayCanvas = container.querySelector(".display-canvas");
-            displayCanvasContext = displayCanvas.getContext('2d');
-            gridCheckbox = container.querySelector(".show-grid");
+        container = document.getElementById("drawing-ui");
+        overCanvas = container.querySelector(".over-canvas");
+        overCanvasContext = overCanvas.getContext('2d');
+        underCanvas = container.querySelector(".under-canvas");
+        underCanvasContext = underCanvas.getContext('2d');
+        displayCanvas = container.querySelector(".display-canvas");
+        displayCanvasContext = displayCanvas.getContext('2d');
+        gridCheckbox = container.querySelector(".show-grid");
 
-            // Create colours
-            var i = 0;
-            const colourContainer = container.querySelector(".colours");
-            _.each([
-                    "#FFF",
-                    "#000",
-                    "#F00",
-                    "#0F0",
-                    "#00F",
-                    "#FF0",
-                    "#0FF",
-                    "#F0F",
-                    "#012",
-                    "#234",
-                    "#456",
-                    "#678",
-                    "#89A",
-                    "#BCD",
-                    "#CDE",
-                    "#DEF",
-                    "#F12",
-                    "#F34",
-                    "#EEE",
-                    "#DDD",
-                    "#AAA"
-                ], (colour) => {
-                    i += 1;
-                    const elem = document.createElement("div");
-                    elem.className = "colour";
+        // Create colours
+        var i = 0;
+        const colourContainer = container.querySelector(".colours");
+        colourContainer.innerHTML = "";
+        _.each([
+                "#FFF",
+                "#000",
+                "#F00",
+                "#0F0",
+                "#00F",
+                "#FF0",
+                "#0FF",
+                "#F0F",
+                "#012",
+                "#234",
+                "#456",
+                "#678",
+                "#89A",
+                "#BCD",
+                "#CDE",
+                "#DEF",
+                "#F12",
+                "#F34",
+                "#EEE",
+                "#DDD",
+                "#AAA"
+            ], (colour) => {
+                i += 1;
+                const elem = document.createElement("div");
+                elem.className = "colour";
 
-                    if (i % 3 == 0) {
-                        elem.className += " third";
-                    }
+                if (i % 3 == 0) {
+                    elem.className += " third";
+                }
 
-                    elem.style.backgroundColor = colour;
-                    elem.dataset.colour = colour;
+                elem.style.backgroundColor = colour;
+                elem.dataset.colour = colour;
 
-                    elem.addEventListener("click", () => {
-                        selectColour(colour);
-                    })
-                    colourContainer.appendChild(elem);
-            });
-            var clear = document.createElement("div");
-            clear.className = "clear";
-            colourContainer.appendChild(clear);
-
-            // Set up tools
-            _.each(container.querySelectorAll(".tool"), (el) => {
-                el.addEventListener("click", () => {
-                    selectTool(el.dataset.tool);
+                elem.addEventListener("click", () => {
+                    selectColour(colour);
                 })
+                colourContainer.appendChild(elem);
+        });
+        var clear = document.createElement("div");
+        clear.className = "clear";
+        colourContainer.appendChild(clear);
+
+        // Set up tools
+        _.each(container.querySelectorAll(".tool"), (el) => {
+            el.addEventListener("click", () => {
+                selectTool(el.dataset.tool);
+            })
+        });
+
+
+        gridCheckbox.addEventListener("change", drawOverlay);
+
+        container.querySelector(".reset").addEventListener("click", () => {
+            const rect = underCanvas.getBoundingClientRect();
+            displayCanvasContext.clearRect(0, 0, rect.width, rect.height);
+            canvasContext.clearRect(0, 0, width, height);
+        });
+
+        container.querySelector(".save").addEventListener("click", () => {
+            canvas.toBlob((blob) => {
+                closeUI();
+                drawings[key] = window.URL.createObjectURL(blob);
+                callback(drawings[key]);
             });
-
-
-            gridCheckbox.addEventListener("change", drawOverlay);
-
-            container.querySelector(".reset").addEventListener("click", () => {
-                const rect = underCanvas.getBoundingClientRect();
-                displayCanvasContext.clearRect(0, 0, rect.width, rect.height);
-                canvasContext.clearRect(0, 0, width, height);
-            });
-
-            container.querySelector(".save").addEventListener("click", () => {
-                canvas.toBlob((blob) => {
-                    closeUI();
-                    drawings[key] = window.URL.createObjectURL(blob);
-                    callback(drawings[key]);
-                });
-            });
-        }
+        });
 
         container.querySelector("h1").innerHTML = title;
         container.querySelector("p").innerHTML = instruction;
@@ -256,9 +256,14 @@ module.exports = {
         // First clear it
         underCanvasContext.clearRect(0, 0, rect.width, rect.height);
 
+        var rowToggle = 0;
         const transparencyGridSize = 16;
-        var toggle = 0;
         _.each(_.range(rect.width / transparencyGridSize), (x) => {
+            var toggle = rowToggle;
+            rowToggle += 1;
+            if (rowToggle > 1) {
+                rowToggle = 0;
+            }
             _.each(_.range(rect.height / transparencyGridSize), (y) => {
                 toggle += 1;
                 if (toggle > 1) {
@@ -268,13 +273,6 @@ module.exports = {
                 underCanvasContext.fillStyle = transparentColours[toggle];
                 underCanvasContext.fillRect(x * transparencyGridSize, y * transparencyGridSize, transparencyGridSize, transparencyGridSize);
             });
-
-            if ((rect.width / transparencyGridSize) % 2 == 0) {
-                toggle += 1;
-                if (toggle > 1) {
-                    toggle = 0;
-                }
-            }
         });
 
         // Draw the guide if needed

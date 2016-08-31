@@ -44,11 +44,19 @@ const interactionTypes = {
         } else if (p["new-sprite"] == "child") {
             graphics.createSprite([
                     ['/s/assets/child.png', [[0, 0]]],
-                    [data.image.hair, [[0, 0], [51, 0], [102, 0]]]],
-                    51, 90, 3, (id) => {
-                console.log("LOADING ID", id);
+                    [data.image.hair, [[0, 0], [51, 0], [102, 0], [153, 0]]]],
+                    51, 90, 4, (id) => {
                 self.player = playersGroup.create(oldPlayer.position.x, oldPlayer.position.y, id);
-                var walk = self.player.animations.add('walk', [0, 1, 2], 4);
+                var walk = self.player.animations.add('walk', [0, 1, 2, 3], 4);
+                spriteChanged(self, p, oldPlayer);
+            });
+        } else if (p["new-sprite"] == "university-student") {
+            graphics.createSprite([
+                    ['/s/assets/university-student.png', [[0, 0]]],
+                    [data.image.hair, [[0, 0], [64, 0], [128, 0], [192, 0]]]],
+                    64, 128, 4, (id) => {
+                self.player = playersGroup.create(oldPlayer.position.x, oldPlayer.position.y, id);
+                var walk = self.player.animations.add('walk', [0, 1, 2, 3], 4);
                 spriteChanged(self, p, oldPlayer);
             });
         }
@@ -127,8 +135,11 @@ module.exports = {
         // this.win = game.add.sprite(256, 256, "tile");
         // game.physics.enable(this.win, Phaser.Physics.ARCADE);
 
-        const level1 = game.add.tilemap('level1');
+        window.level1 = game.add.tilemap('level1');
         level1.addTilesetImage('level1-tiles', 'level1-tiles');
+        graphics.modifyTilesheet([
+            [data.image.wallpaper, 64, 0]
+        ]);
 
         const far1Layer = level1.createLayer('far1');
         far1Layer.resizeWorld();
@@ -195,20 +206,6 @@ module.exports = {
                 this.player.animations.play('jump', 4);
                 this.player.body.velocity.y = 0 - jumpHeight;
             }
-            // audio.playOriginal("jump", "Jump Sound", "Please record the sound of this character jumping");
-            // drawing.open("Draw hat", "Draw a hat...", 32, 16, "/s/assets/hat_guide.png", (url) => {
-            //     console.log("Got", url);
-            // });
-
-            // text.getOrAsk("babyname", "Baby Name", "What is the name of your baby?", (babyname) => {
-            //     audio.promptForSound("babyname", "Baby Name", "Please say the baby name ('<#babyname#>')", () => {
-            //         audio.narrate([
-            //             ["Once upon a time there was a baby named <#babyname#>. Test One Two Three", ["/s/assets/narration/onceuponatime.mp3", "<#babyname#>", "/s/assets/narration/test.wav"]],
-            //             ["1", []],
-            //             ["2", []],
-            //         ]);
-            //     });
-            // });
         }
     }
 }
