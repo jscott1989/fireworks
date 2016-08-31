@@ -11,6 +11,10 @@ window.URL = window.URL || window.webkitURL;
 window.sounds = {};
 
 module.exports = {
+    all() {
+        return sounds;
+    },
+
     init() {
         /**
          * We want permission to record from the start - so prompt here.
@@ -59,12 +63,14 @@ module.exports = {
         }
     },
 
-    narrate(set) {
+    narrate(set, callback) {
         if (set.length > 0) {
             const s = set.shift();
             narrate.open(s[0], s[1], () => {
                 this.narrate(set);
             });
+        } else if (callback != null) {
+            callback();
         }
     }
 }

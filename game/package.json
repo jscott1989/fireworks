@@ -9,8 +9,10 @@
   "license": "MIT",
   "dependencies": {
     "floodfill": "^2.1.0",
+    "jquery": "^3.1.0",
     "lodash": "^4.15.0",
-    "phaser": "^2.6.1"
+    "phaser": "^2.6.1",
+    "node-uuid": "^1.4.7"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

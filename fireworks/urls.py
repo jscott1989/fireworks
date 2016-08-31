@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
-    url(r'^$', views.index, name='index')
-]
+    url(r'^$', views.index, name='index'),
+    url(r'^startupload$', views.startupload, name='startupload'),
+    url(r'^uploadimage/(?P<uploadid>.+)$', views.uploadimage,
+        name='uploadimage'),
+    url(r'^uploadsound/(?P<uploadid>.+)$', views.uploadsound,
+        name='uploadsound'),
+    url(r'^markcomplete/(?P<uploadid>.+)$', views.markcomplete,
+        name='markcomplete')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

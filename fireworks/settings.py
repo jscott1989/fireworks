@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'fireworks',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/s/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/m/'

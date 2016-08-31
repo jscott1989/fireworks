@@ -25,6 +25,11 @@
         background: pink;
         height: 30px;
 
+        em, strong {
+            font-style: normal;
+            font-weight: bold;
+        }
+
         h1 {
             font-size: 1em;
             margin: 0;
@@ -35,6 +40,11 @@
 
     .body {
         margin-top: 20px;
+
+        em, strong {
+            font-style: normal;
+            font-weight: normal;
+        }
     }
 
     footer {
@@ -56,10 +66,12 @@
     bottom: 10px;
 
     strong {
+        font-weight: strong;
         color: blue;
     }
 
     em {
+        font-style: italic;
         color: orange;
     }
 }
@@ -85,6 +97,48 @@
         text-align: center;
     }
 }
+
+#save-ui {
+    width: 400px;
+    height: 320px;
+
+    footer {
+        text-align: center;
+    }
+}
+
+#upload-ui {
+    width: 400px;
+    height: 100px;
+
+    .progress {
+        width: 380px;
+        background: pink;
+        border: 1px solid black;
+        position: relative;
+        height: 30px;
+    }
+
+    .complete {
+        height: 30px;
+        width: 33%;
+        background: green;
+    }
+
+    .status {
+        position: absolute;
+        top: 5px;
+        left: 0px;
+        width: 380px;
+        text-align: center;
+    }
+
+    footer {
+        text-align: center;
+        display: none;
+    }
+}
+
 
 #drawing-ui {
     width: 700px;

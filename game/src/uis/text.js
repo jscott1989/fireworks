@@ -17,6 +17,10 @@ const closeUI = () => {
 var text = {};
 
 module.exports = {
+    all() {
+        return text;
+    },
+    
     hasText(key) {
         return _.has(text, key);
     },

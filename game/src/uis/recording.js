@@ -20,6 +20,7 @@ var playingAudio;
 var url;
 
 const closeUI = () => {
+    document.removeEventListener('keydown', keydown);
     container.style.display = "none";
     game.paused = false;
 }
@@ -67,8 +68,8 @@ const keydown = (e) => {
     if (!isRecording) {
         if (e.code == "Space") {
             // Space is pressed, start recording
-            startRecordingCountdown();
             document.removeEventListener('keydown', keydown);
+            startRecordingCountdown();
         }
     }
 };

@@ -18,7 +18,9 @@ const close = () => {
 
     container.style.display = "none";
     game.paused = false;
-    audioPlayer.pause();
+    if (audioPlayer != null) {
+        audioPlayer.pause();
+    }
     callback();
 }
 

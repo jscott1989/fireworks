@@ -9,6 +9,8 @@ var container;
 var selectedColour;
 var selectedTool;
 
+var drawings = {};
+
 
 const tools = {
     pencil(x, y) {
@@ -49,7 +51,7 @@ const transparentColours = [
 ];
 
 const MAX_CANVAS_WIDTH = 600;
-const MAX_CANVAS_HEIGHT = 350;
+const MAX_CANVAS_HEIGHT = 300;
 
 
 var pixelSize;
@@ -126,7 +128,16 @@ const drawOverlay = () => {
 }
 
 module.exports = {
-    open(title, instruction, width, height, guide, callback) {
+    all() {
+        return drawings;
+    },
+    
+    open(key, title, instruction, width, height, guide, callback) {
+        if (_.has(drawings, key)) {
+            callback(drawings[key]);
+            return;
+        }
+
         if (container == null) {
             container = document.getElementById("drawing-ui");
             overCanvas = container.querySelector(".over-canvas");
@@ -202,7 +213,8 @@ module.exports = {
             container.querySelector(".save").addEventListener("click", () => {
                 canvas.toBlob((blob) => {
                     closeUI();
-                    callback(window.URL.createObjectURL(blob));
+                    drawings[key] = window.URL.createObjectURL(blob);
+                    callback(drawings[key]);
                 });
             });
         }
@@ -223,6 +235,10 @@ module.exports = {
             pixelSize = Math.floor(MAX_CANVAS_WIDTH / width);
         } else {
             pixelSize = Math.floor(MAX_CANVAS_HEIGHT / height);
+        }
+
+        if (pixelSize * height > MAX_CANVAS_HEIGHT) {
+            pixelSize = Math.floor(MAX_CANVAS_HEIGHT / height);   
         }
 
         // Set the width and height of the other three canvases
@@ -252,9 +268,12 @@ module.exports = {
                 underCanvasContext.fillStyle = transparentColours[toggle];
                 underCanvasContext.fillRect(x * transparencyGridSize, y * transparencyGridSize, transparencyGridSize, transparencyGridSize);
             });
-            toggle += 1;
-            if (toggle > 1) {
-                toggle = 0;
+
+            if ((rect.width / transparencyGridSize) % 2 == 0) {
+                toggle += 1;
+                if (toggle > 1) {
+                    toggle = 0;
+                }
             }
         });
 
