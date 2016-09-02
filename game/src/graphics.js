@@ -89,6 +89,7 @@ module.exports = {
             var file = files.shift();
 
             var image = new Image()
+            img.crossOrigin = "Anonymous";
             image.onload = () => {
                 image.onload = () => {}; // For some reason it got called twice
                 _.each(file[1], (location) => {
@@ -132,6 +133,7 @@ module.exports = {
         const id = v4();
 
         var image = new Image();
+        img.crossOrigin = "Anonymous";
         image.onload = () => {
             image.onload = () => {};
 
