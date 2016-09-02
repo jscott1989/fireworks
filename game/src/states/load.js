@@ -7,6 +7,8 @@ module.exports = {
         // Show a loading label
         const loadingLabel = game.add.text(80, 150, "Loading...", {"font": "30px Courier", "fill": "#ffffff"})
 
+        game.load.crossOrigin = "anonymous";
+
         // Load assets
         game.load.image("interaction", "s/assets/interaction.png");
 
