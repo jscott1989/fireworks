@@ -56,7 +56,7 @@ const MAX_CANVAS_HEIGHT = 300;
 
 var pixelSize;
 var guideImage = new Image();
-img.crossOrigin = "Anonymous";
+guideImage.crossOrigin = "Anonymous";
 
 // On-screen elements
 var overCanvas;
