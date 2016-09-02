@@ -15,7 +15,9 @@ if [ -f bin/install_nodejs ]; then
 fi
 
 
-webpack
+node_modules/webpack/bin/webpack.js
+
+cd ..;
 
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
