@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '*-lc-4rlwz9gwmvb#-m^r_$rx*zelehz$pr8!*0r44=m1jb-l9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', 'False') == 'True')
+USE_LIVE_DATA = bool(os.environ.get('USE_LIVE_DATA', str(not DEBUG)) == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fireworks',
+
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +127,10 @@ STATIC_URL = '/s/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/m/'
 
+if USE_LIVE_DATA:
+    AWS_QUERYSTRING_AUTH = False
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
+    MEDIA_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto.S3BotoStorage"

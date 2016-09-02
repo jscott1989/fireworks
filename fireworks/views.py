@@ -5,6 +5,7 @@ from django.db.models import Count
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import random
+from django.conf import settings
 
 
 def index(request):
@@ -20,8 +21,8 @@ def index(request):
         data = {
             "parent": c.pk,
             "text": {i.key: i.value for i in c.texts.all()},
-            "image": {i.key: "/m/" + str(i.image) for i in c.images.all()},
-            "sound": {i.key: "/m/" + str(i.sound) for i in c.sounds.all()}
+            "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
+            "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
         }
     else:
         data = {
