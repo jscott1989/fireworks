@@ -3,7 +3,6 @@
  */
 
 import _ from 'lodash';
-import $ from 'jQuery';
 import text from './text';
 import audio from '../audio';
 import drawing from './drawing';
