@@ -113,7 +113,7 @@
                  "type":"player",
                  "visible":true,
                  "width":64,
-                 "x":128,
+                 "x":64,
                  "y":448
                 }, 
                 {
@@ -135,7 +135,7 @@
                  "type":"interaction",
                  "visible":true,
                  "width":64,
-                 "x":896,
+                 "x":1152,
                  "y":448
                 }, 
                 {
@@ -155,7 +155,7 @@
                  "type":"interaction",
                  "visible":true,
                  "width":64,
-                 "x":960,
+                 "x":1280,
                  "y":448
                 }, 
                 {
@@ -177,7 +177,7 @@
                  "type":"interaction",
                  "visible":true,
                  "width":64,
-                 "x":768,
+                 "x":1024,
                  "y":448
                 }, 
                 {
@@ -221,7 +221,117 @@
                  "type":"interaction",
                  "visible":true,
                  "width":64,
-                 "x":512,
+                 "x":576,
+                 "y":448
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":14,
+                 "name":"change to walking-baby",
+                 "properties":
+                    {
+                     "new-sprite":"walking-baby",
+                     "type":"changeSprite"
+                    },
+                 "propertytypes":
+                    {
+                     "new-sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":192,
+                 "y":448
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":15,
+                 "name":"collect info",
+                 "properties":
+                    {
+                     "script":"[\n{\"type\":\"colour\", \"key\":\"clothing_colour\", \"title\": \"Clothing Colour\", \"instruction\":\"Select the colour of the child's clothing\"}\n]",
+                     "type":"script"
+                    },
+                 "propertytypes":
+                    {
+                     "script":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":192,
+                 "y":256
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":16,
+                 "name":"change to worker",
+                 "properties":
+                    {
+                     "new-sprite":"worker",
+                     "type":"changeSprite"
+                    },
+                 "propertytypes":
+                    {
+                     "new-sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":704,
+                 "y":448
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":17,
+                 "name":"change to school student",
+                 "properties":
+                    {
+                     "new-sprite":"school-student",
+                     "type":"changeSprite"
+                    },
+                 "propertytypes":
+                    {
+                     "new-sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":448,
+                 "y":448
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":18,
+                 "name":"change to old",
+                 "properties":
+                    {
+                     "new-sprite":"old",
+                     "type":"changeSprite"
+                    },
+                 "propertytypes":
+                    {
+                     "new-sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":832,
                  "y":448
                 }],
          "opacity":1,
@@ -231,7 +341,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":13,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":64,

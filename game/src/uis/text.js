@@ -29,6 +29,10 @@ module.exports = {
         return text[key];
     },
 
+    set(key, value) {
+        text[key] = value;
+    },
+
     getOrAsk(key, title, instruction, c) {
         if (_.has(text, key)) {
             c(text[key]);

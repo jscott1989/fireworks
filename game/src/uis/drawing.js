@@ -132,6 +132,10 @@ module.exports = {
     all() {
         return drawings;
     },
+
+    get(key) {
+        return drawings[key];
+    },
     
     open(key, title, instruction, width, height, guide, callback) {
         if (_.has(drawings, key)) {

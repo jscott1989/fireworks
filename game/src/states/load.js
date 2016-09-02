@@ -15,10 +15,10 @@ module.exports = {
         game.load.tilemap('level1', 's/assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Spritesheets
-        game.load.spritesheet('baby', 's/assets/baby.png', 64, 64, 2);
-        game.load.spritesheet('walking-baby', 's/assets/walking-baby.png', 64, 74, 6);
-        game.load.spritesheet('child', 's/assets/child.png', 51, 90, 4);
-        game.load.spritesheet('university-student', 's/assets/university-student.png', 64, 128, 4);
+        // game.load.spritesheet('baby', 's/assets/baby.png', 64, 64, 2);
+        // game.load.spritesheet('walking-baby', 's/assets/walking-baby.png', 64, 74, 6);
+        // game.load.spritesheet('child', 's/assets/child.png', 51, 90, 4);
+        // game.load.spritesheet('university-student', 's/assets/university-student.png', 64, 128, 4);
 
     },
 
