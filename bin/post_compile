@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -veo pipefail
+
+echo "-----> Running post-compile hook"
+
+export MEMCACHE_SERVERS='' MEMCACHIER_SERVERS=''
+
+if [ -f bin/install_nodejs ]; then
+    echo "-----> Running install_nodejs"
+    chmod +x bin/install_nodejs
+    bin/install_nodejs
+ 
+    cd game;
+    npm install
+fi
+
+
+webpack
+
+python manage.py migrate --noinput
+python manage.py collectstatic --noinput
+
+echo "-----> Post-compile done"
