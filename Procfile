@@ -1,0 +1,1 @@
+web: gunicorn fireworks.wsgi --log-file -
