@@ -6,9 +6,14 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import random
 from django.conf import settings
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from urllib.request import urlopen
 
+ROOT_URL = "http://localhost:8000"
 
 def index(request):
+    data = {}
     sofar = models.Character.objects.filter(complete=True).count()
     if (sofar > 0):
         # Find the lowest number of children
@@ -17,21 +22,122 @@ def index(request):
 
         all_lowest_children = [x for x in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).filter(num_children=lowest_children_count).all()]
         c = random.choice(all_lowest_children)
-        data = {
-            "parent": c.pk,
-            "text": {i.key: i.value for i in c.texts.all()},
-            "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
-            "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
-        }
+        data["parent"] = c.pk
+        # "parent": c.pk,
+        # "text": {i.key: i.value for i in c.texts.all()},
+        # "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
+        # "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
 
         # Now we push extra information into the data for use by the story
         data["text"]["sofar"] = sofar
-    else:
-        data = {
-            "text": {},
-            "image": {},
-            "sound": {}
-        }
+
+    # Now we must fill in blank information
+    if "text" not in data:
+        data["text"] = {"sofar": 0}
+    if "image" not in data:
+        data["image"] = {}
+    if "sound" not in data:
+        data["sound"] = {}
+
+    def default(category, key, value):
+        if key not in data[category]:
+            data[category][key] = value
+
+
+    SKIN_COLORS = ["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]
+    EYE_COLORS = ["#1907ba", "#776536", "#76c4ae", "#6ca580"]
+    CLOTHES_COLORS = ["#2BACBB", "#E4266F", "#151928", "#E2BC03", "#89B8FF"]
+    EYE_NUMBERS = range(0, 5)
+    EAR_NUMBERS = range(0, 5)
+    NOSE_NUMBERS = range(0, 5)
+    MOUTH_NUMBERS = range(0, 5)
+    ACCESSORIES_NUMBERS = range(0, 5)
+    HAIRS = ["/s/assets/demo/hair/boy1.png", "/s/assets/demo/hair/boy2.png", "/s/assets/demo/hair/boy3.png",
+             "/s/assets/demo/hair/girlponytail1.png", "/s/assets/demo/hair/girlponytail2.png", "/s/assets/demo/hair/girlponytail3.png",
+             "/s/assets/demo/hair/shorthair1.png", "/s/assets/demo/hair/shorthair2.png", "/s/assets/demo/hair/shorthair3.png",
+             "/s/assets/demo/hair/spikyhair1.png", "/s/assets/demo/hair/spikyhair2.png"]
+    BLACKBOARDS = ["/s/assets/demo/blackboard/scribble1.png", "/s/assets/demo/blackboard/scribble2.png"]
+    GRAVESTONES = ["/s/assets/demo/gravestones/gravestone1.png", "/s/assets/demo/gravestones/gravestone2.png", "/s/assets/demo/gravestones/gravestone3.png", "/s/assets/demo/gravestones/gravestone4.png"]
+
+    # Baby
+    default("text", "skin_color", "#8d5524")
+    default("text", "eye_color", "#1907ba")
+    default("text", "clothes_color", "#2BACBB")
+    default("text", "eye_number", 0)
+    default("text", "ear_number", 0)
+    default("text", "nose_number", 0)
+    default("text", "mouth_number", 0)
+    default("text", "accessories_number", 0)
+
+    # Parents
+
+    default("text", "parent_skin_color", "#8d5524")
+    default("text", "parent_eye_color", "#1907ba")
+    default("text", "parent_clothes_color", "#151928")
+    default("text", "parent_eye_number", 2)
+    default("text", "parent_ear_number", 2)
+    default("text", "parent_nose_number", 2)
+    default("text", "parent_mouth_number", 2)
+    default("text", "parent_accessories_number", 2)
+    default("image", "parent_hair", "/s/assets/demo/hair/boy1.png")
+
+    default("text", "partner_skin_color", "#c68642")
+    default("text", "partner_eye_color", "#776536")
+    default("text", "partner_clothes_color", "#E4266F")
+    default("text", "partner_eye_number", 1)
+    default("text", "partner_ear_number", 1)
+    default("text", "partner_nose_number", 1)
+    default("text", "partner_mouth_number", 1)
+    default("text", "partner_accessories_number", 1)
+    default("image", "partner_hair", "/s/assets/demo/hair/boy2.png")
+
+    # Friends
+    friend_names = ["Chris", "Charlie", "Jamie", "Skyler", "Justice", "Dakota", "Lennon", "Rowan", "Hunter", "Harper", "Dylan", "Jordyn", "Blake"]
+    random.shuffle(friend_names)
+    for i in range(1, 9):
+        default("text", "friend%s_name" % i, friend_names.pop())
+        default("text", "friend%s_skin_color" % i, random.choice(SKIN_COLORS))
+        default("text", "friend%s_eye_color" % i, random.choice(EYE_COLORS))
+        default("text", "friend%s_clothes_color" % i, random.choice(CLOTHES_COLORS))
+        default("text", "friend%s_eye_number" % i, random.choice(EYE_NUMBERS))
+        default("text", "friend%s_ear_number" % i, random.choice(EAR_NUMBERS))
+        default("text", "friend%s_nose_number" % i, random.choice(NOSE_NUMBERS))
+        default("text", "friend%s_mouth_number" % i, random.choice(MOUTH_NUMBERS))
+        default("text", "friend%s_accessories_number" % i, random.choice(ACCESSORIES_NUMBERS))
+        default("image", "friend%s_hair" % i, random.choice(HAIRS))
+
+    # Teacher
+    default("text", "teacher_skin_color", random.choice(SKIN_COLORS))
+    default("text", "teacher_eye_color", random.choice(EYE_COLORS))
+    default("text", "teacher_clothes_color", random.choice(CLOTHES_COLORS))
+    default("text", "teacher_eye_number", random.choice(EYE_NUMBERS))
+    default("text", "teacher_ear_number", random.choice(EAR_NUMBERS))
+    default("text", "teacher_nose_number", random.choice(NOSE_NUMBERS))
+    default("text", "teacher_mouth_number", random.choice(MOUTH_NUMBERS))
+    default("text", "teacher_accessories_number", random.choice(ACCESSORIES_NUMBERS))
+    default("image", "teacher_hair", random.choice(HAIRS))
+
+    # Bedroom
+
+    default("image", "wallpaper", "/s/assets/demo/wallpaper.png")
+    default("text", "parent_name", "Jonny")
+    default("text", "partner_name", "Xiyun")
+    default("text", "name", "Jamie")
+
+    # Children's room
+
+    default("image", "friends_toy1", "/s/assets/demo/toys/toy_1.png")
+    default("image", "friends_toy2", "/s/assets/demo/toys/toy_1.png")
+
+    # School
+
+    default("image", "blackboard", random.choice(BLACKBOARDS))
+
+    # Graveyard
+    default("image", "friends_gravestone1", random.choice(GRAVESTONES))
+    default("image", "friends_gravestone2", random.choice(GRAVESTONES))
+    default("image", "partner_gravestone", random.choice(GRAVESTONES))
+
     return render(request, "index.html", {"data": json.dumps(data)})
 
 
@@ -62,6 +168,19 @@ def uploadimage(request, uploadid):
     models.Image(character=c,
                  key=request.POST['key'],
                  image=request.FILES['data']).save()
+    return JsonResponse({})
+
+@csrf_exempt
+def setimage(request, uploadid):
+    c = models.Character.objects.get(pk=uploadid)
+
+    im = models.Image(character=c, key=request.POST['key'])
+
+    img_temp = NamedTemporaryFile(delete=True)
+    img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())
+    img_temp.flush()
+
+    im.save()
     return JsonResponse({})
 
 

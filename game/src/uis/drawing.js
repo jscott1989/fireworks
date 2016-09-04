@@ -6,6 +6,7 @@
  import pause from '../pause';
  require("floodfill");
  import ui from './ui';
+ import dataURLtoBlob from '../lib/blob';
 
 var container;
 
@@ -210,6 +211,18 @@ const drawOverlay = () => {
 }
 
 module.exports = {
+    setURL(key, value) {
+        drawings[key] = value;
+        upload.setImage(key, value);
+    },
+
+    set(key, value) {
+        dataURLtoBlob(value, (blob) => {
+            drawings[key] = value;
+            upload.uploadImage(key, blob);
+        });
+    },
+
     all() {
         return drawings;
     },
@@ -223,6 +236,7 @@ module.exports = {
             callback(drawings[key]);
             return;
         }
+        var self = this;
 
         isTiled = tiled;
         tWidth = width;
@@ -245,27 +259,27 @@ module.exports = {
         const colourContainer = container.querySelector(".colours");
         colourContainer.innerHTML = "";
         _.each([
-                "#FFF",
-                "#000",
-                "#F00",
-                "#0F0",
-                "#00F",
-                "#FF0",
-                "#0FF",
-                "#F0F",
-                "#012",
-                "#234",
-                "#456",
-                "#678",
-                "#89A",
-                "#BCD",
-                "#CDE",
-                "#DEF",
-                "#F12",
-                "#F34",
-                "#EEE",
-                "#DDD",
-                "#AAA"
+                "#000000",
+                "#505050",
+                "#A0A0A0",
+                "#8E8E8E",
+                "#FFFFFF",
+                "#000041",
+                "#0000CB",
+                "#02DA81",
+                "#80FE1A",
+                "#FFEE00",
+                "#FFAB00",
+                "#FE0000",
+                "#FE00FF",
+                "#202040",
+                "#6464C9",
+                "#6CD9AC",
+                "#B7FC7E",
+                "#FCF47E",
+                "#FFD480",
+                "#FF8080",
+                "#FF80FF"
             ], (colour) => {
                 i += 1;
                 const elem = document.createElement("div");
@@ -472,7 +486,7 @@ module.exports = {
             move(e);
         });
 
-        selectColour("#000");
+        selectColour("#000000");
         selectTool("pencil");
     },
 

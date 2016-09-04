@@ -5,6 +5,7 @@
 import _ from 'lodash';
 import text from './text';
 import pause from '../pause';
+import ui from './ui';
 
 var container;
 
@@ -36,8 +37,8 @@ module.exports = {
         });
 
         // Reset the state of the menu
-        container.querySelector("h1").innerHTML = title;
-        container.querySelector("p").innerHTML = instruction;
+        container.querySelector("h1").innerHTML = ui.parseText(title);
+        container.querySelector("p").innerHTML = ui.parseText(instruction);
         
         pause.pause('colour');
         container.style.display = "block";

@@ -82,6 +82,10 @@ module.exports = {
         upload('/image/' + uploadId, fd, () => {}, true);
     },
 
+    setImage(key, value) {
+        upload("/setImage/" + uploadId, {key: key, value: value});
+    },
+
     uploadSound(key, blob) {
         var fd = new FormData();
         fd.append('key', key);

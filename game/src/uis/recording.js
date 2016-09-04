@@ -62,6 +62,7 @@ const countup = () => {
     if (countdownText.length == 1) {
         countdownText = "0" + countdownText;
     }
+    document.querySelector('.record-status').src = '/s/assets/ui/microphone-active.png';
     statusText.innerHTML = "Recording: 0:" + countdownText;
     recordingCountdown += 1;
     countdownTimeout = setTimeout(countup, 1000);
@@ -124,6 +125,7 @@ const resetAfterStop = () => {
     isRecording = false;
     clearTimeout(countdownTimeout);
 
+    document.querySelector('.record-status').src = '/s/assets/ui/microphone.png';
     if (url == null) {
         statusText.innerHTML = "Hold Space to start recording";
         container.querySelector(".complete-controls").style.display = "none";

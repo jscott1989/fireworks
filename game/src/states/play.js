@@ -16,6 +16,7 @@ var stopParentsFollowing = false;
 var spriteInteractions = {};
 var interactions = {};
 var interactionGroup;
+var childInteractionGroup;
 var interactableSpriteGroup;
 var itemsGroup;
 var charactersGroup;
@@ -24,49 +25,69 @@ var doorsGroup;
 var walkSpeed = 50;
 var jumpHeight = 0;
 
-var skinColor = _.sample(["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]);
-var eyeColor = _.sample(["#1907ba", "#776536", "#76c4ae", "#6ca580"]);
-var clothesColor = _.sample(["#2BACBB", "#E4266F", "#151928", "#E2BC03", "#89B8FF"]);
-var eyeNumber =  _.random(0, 4);
-var earNumber =  _.random(0, 4);
-var noseNumber =  _.random(0, 4);
-var mouthNumber =  _.random(0, 4);
-var accessoriesNumber = _.random(0, 4);
-
-const testNum = 0;
-
-var eyeNumber = testNum;
-var earNumber = testNum;
-var noseNumber = testNum;
-var mouthNumber = testNum;
-var accessoriesNumber = testNum;
-
 var currentSprite = "baby";
 var canMove = true;
-var globalPlayer;
+window.globalPlayer = null;
 var lazyNPCs = [];
 var doors = {};
 
-var hairKey = "<%hair%>";
+var hairKey = "<%parent_hair%>";
+var findingPartner = false;
+
+var partner;
+var child;
+var isKissing = false;
+
+
+var tilesheetModifications = [
+    ["<%wallpaper%>", 0, 3],
+    ["<%blackboard%>", 7, 21],
+    ["<%friends_gravestone1%>", 9, 2],
+    ["<%friends_gravestone2%>", 9, 3],
+    ["<%partner_gravestone%>", 9, 4]
+];
 
 
 const instantiateNPC = (obj) => {
-    var clothes = _.sample(["#2BACBB", "#E4266F", "#151928", "#E2BC03", "#89B8FF"]);
+    
+        var skin_color = _.sample(["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]);
+    var eye_color = _.sample(["#1907ba", "#776536", "#76c4ae", "#6ca580"]);
+    var clothes_color = _.sample(["#2BACBB", "#E4266F", "#151928", "#E2BC03", "#89B8FF"]);
+    var eye_number = _.random(0, 4);
+    var ear_number = _.random(0, 4);
+    var nose_number = _.random(0, 4);
+    var mouth_number = _.random(0, 4);
+    var accessories_number = _.random(0, 4);
+    var hair = "/s/assets/demo/hair/boy1.png"
+    
+    if (obj.properties.data) {
+        var l = JSON.parse(obj.properties.data);
+        skin_color = data.text[l[0]];
+        eye_color = data.text[l[1]];
+        clothes_color = data.text[l[2]];
+        eye_number = data.text[l[3]];
+        ear_number = data.text[l[4]];
+        nose_number = data.text[l[5]];
+        mouth_number = data.text[l[6]];
+        accessories_number = data.text[l[7]];
+        hair = data.image[l[8]];
+    }
 
     if (obj.properties.type == "school-student" && text.get("uniform") != null) {
-        clothes = text.get("uniform");
+        clothes_color = text.get("uniform");
     }
 
             createCharacter(obj.properties.type, obj.x + 32, obj.y,
-    _.sample(["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]),
-    _.sample(["#1907ba", "#776536", "#76c4ae", "#6ca580"]),
-    clothes,
-    _.random(0, 4),
-    _.random(0, 4),
-    _.random(0, 4),
-    _.random(0, 4),
-    _.random(0, 4), (character) => {
+    skin_color,
+    eye_color,
+    clothes_color,
+    eye_number,
+    ear_number,
+    nose_number,
+    mouth_number,
+    accessories_number, hair, (character) => {
         character.npc = AITypes[obj.properties.AI](character, obj.properties);
+        character.properties = obj.properties;
     });
 }
 
@@ -82,6 +103,8 @@ const spriteChanged = (self, p, oldPlayer) => {
         walkSpeed = 75;
         jumpHeight = 200;
     }
+    self.player.position.x = oldPlayer.position.x;
+    self.player.position.y = oldPlayer.position.y;
     oldPlayer.destroy();
 
     game.camera.follow(self.player);
@@ -97,15 +120,14 @@ const createCharacter = (type, x, y,
     noseNumber,
     mouthNumber,
     accessoriesNumber,
-
-
+    hair,
     callback) => {
 
     const done = (player, x, y, width, height) => {
         game.physics.enable(player, Phaser.Physics.ARCADE);
         player.body.gravity.y = 300;
         if (x != undefined) {
-            player.body.setSize(x, y, width, height);
+            player.body.setSize(width, height, x, y);
         }
         player.anchor.setTo(.5, 1);
         callback(player);
@@ -146,7 +168,7 @@ const createCharacter = (type, x, y,
             64, 64, 2, (id) => {
                 var player = charactersGroup.create(x, y, id);
                 player.animations.add('walk');
-                done(player);
+                done(player, 0, 0, 57, 64);
             });
     } else if (type == "walking-baby") {
         graphics.createSprite([
@@ -208,7 +230,7 @@ const createCharacter = (type, x, y,
             var player = charactersGroup.create(x, y, id);
             player.animations.add('walk', [0, 1, 2, 3], 4);
             player.animations.add('jump', [4, 5], 4);
-            done(player, 30, 64, 12, 10);
+            done(player, 12, 10, 30, 64);
         });
     } else if (type == "child") {
         graphics.createSprite([
@@ -219,18 +241,30 @@ const createCharacter = (type, x, y,
                 [49, 0, eyeNumber * 51, 0, 51, 45],
                 [100, 0, eyeNumber * 51, 0, 51, 45],
                 [151, 0, eyeNumber * 51, 0, 51, 45],
+                [202, 0, eyeNumber * 51, 0, 51, 45],
+                [253, 0, eyeNumber * 51, 0, 51, 45],
+                [304, 0, eyeNumber * 51, 0, 51, 45],
+                [355, 0, eyeNumber * 51, 0, 51, 45],
 
                 // Ear
                 [-2, 0, earNumber * 51, 45, 51, 45],
                 [49, 0, earNumber * 51, 45, 51, 45],
                 [100, 0, earNumber * 51, 45, 51, 45],
                 [151, 0, earNumber * 51, 45, 51, 45],
+                [202, 0, earNumber * 51, 45, 51, 45],
+                [253, 0, earNumber * 51, 45, 51, 45],
+                [304, 0, earNumber * 51, 45, 51, 45],
+                [355, 0, earNumber * 51, 45, 51, 45],
 
                 // Nose
                 [-2, 0, noseNumber * 51, 90, 51, 45],
                 [49, 0, noseNumber * 51, 90, 51, 45],
                 [100, 0, noseNumber * 51, 90, 51, 45],
                 [151, 0, noseNumber * 51, 90, 51, 45],
+                [202, 0, noseNumber * 51, 90, 51, 45],
+                [253, 0, noseNumber * 51, 90, 51, 45],
+                [304, 0, noseNumber * 51, 90, 51, 45],
+                [355, 0, noseNumber * 51, 90, 51, 45],
 
                 // Mouth
                 [-2, 0, mouthNumber * 51, 135, 51, 45],
@@ -243,17 +277,25 @@ const createCharacter = (type, x, y,
                 [49, 0, accessoriesNumber * 51, 180, 51, 45],
                 [100, 0, accessoriesNumber * 51, 180, 51, 45],
                 [151, 0, accessoriesNumber * 51, 180, 51, 45],
+                [202, 0, accessoriesNumber * 51, 180, 51, 45],
+                [253, 0, accessoriesNumber * 51, 180, 51, 45],
+                [304, 0, accessoriesNumber * 51, 180, 51, 45],
+                [355, 0, accessoriesNumber * 51, 180, 51, 45],
             ]]
             ],
             [
                 ["#FF0000", skinColor],
-                ["#00FF00", eyeColor]
+                ["#00FF00", eyeColor],
+                ["#FF0066", clothesColor],
+                ["#FFFF00", graphics.shadeColor(clothesColor, -0.5)],
+                ["#0000FF", graphics.complementColor(clothesColor)]
             ],
-            [[hairKey, [[0, 0], [51, 0], [102, 0], [153, 0]]]],
-            51, 90, 4, (id) => {
+            [[hair, [[0, 0], [51, 0], [102, 0], [153, 0], [204, 0], [255, 0], [306, 0], [357, 0]]]],
+            51, 90, 8, (id) => {
                 var player = charactersGroup.create(x, y, id);
                 player.animations.add('walk', [0, 1, 2, 3], 4);
-                done(player, 30, 80, 12, 10);
+                player.animations.add('kiss', [4, 5, 6, 7], 4);
+                done(player, 9, 0, 35, 90);
         });
     } else if (type == "school-student") {
             graphics.createSprite([
@@ -311,14 +353,14 @@ const createCharacter = (type, x, y,
                         ["#FF0066", clothesColor],
                         ["#FFFF00", graphics.shadeColor(clothesColor, -0.5)]
                     ],
-                    [[hairKey, [[0, 0], [51, 0], [102, 0], [153, 0], [204, 0], [255, 0], [306, 1]]],
+                    [[hair, [[0, 0], [51, 0], [102, 0], [153, 0], [204, 0], [255, 0], [306, 1]]],
                     ["<#tie#>", [[24, 47], [75, 47], [126, 47], [177, 47], [228, 47], [279, 47], [330, 48]]]],
                     51, 90, 7, (id) => {
                         var player = charactersGroup.create(x, y, id);
                         player.animations.add('walk', [0, 1, 2, 1], 4);
                         player.animations.add('jump', [3, 4], 4);
                         player.animations.add('dance', [5, 6], 4);
-                        done(player);
+                        done(player, 9, 0, 35, 90);
             });
         } else if (type == "university-student") {
             graphics.createSprite([
@@ -375,7 +417,7 @@ const createCharacter = (type, x, y,
                         ["#FF0066", clothesColor],
                         ["#FFFF00", graphics.shadeColor(clothesColor, -0.5)],
                     ],
-                    [[hairKey, [[1, 6], [65, 6], [129, 6], [193, 6], [257, 6], [321, 6]]]],
+                    [[hair, [[1, 6], [65, 6], [129, 6], [193, 6], [257, 6], [321, 6]]]],
                     64, 128, 6, (id) => {
                         var player = charactersGroup.create(x, y, id);
                         player.animations.add('walk', [0, 1, 2, 3], 4);
@@ -436,7 +478,7 @@ const createCharacter = (type, x, y,
                         ["#00FF00", eyeColor],
                         ["#FF0066", clothesColor],
                     ],
-                    [[hairKey, [[1, 6], [65, 6], [129, 6], [193, 6], [257, 6], [321, 6]]]],
+                    [[hair, [[1, 6], [65, 6], [129, 6], [193, 6], [257, 6], [321, 6]]]],
                     64, 128, 6, (id) => {
                         var player = charactersGroup.create(x, y, id);
                         player.animations.add('walk', [0, 1, 2, 3], 4);
@@ -473,7 +515,7 @@ const createCharacter = (type, x, y,
                         ["#00FF00", eyeColor],
                         ["#FF0066", clothesColor],
                     ],
-                    [[hairKey, [[4, 13], [68, 13]]]],
+                    [[hair, [[4, 13], [68, 13]]]],
                     64, 120, 2, (id) => {
                     var player = charactersGroup.create(x, y, id);
                     player.animations.add('walk', [0, 1, 2, 3], 4);
@@ -483,8 +525,64 @@ const createCharacter = (type, x, y,
         }
 }
 
+const selectPartner = (character) => {
+    text.set("partner_name", data.text["friend" + character.properties.friend_id + "_name"]);
+    text.set("partner_skin_color", data.text["friend" + character.properties.friend_id + "_skin_color"]);
+    text.set("partner_eye_color", data.text["friend" + character.properties.friend_id + "_eye_color"]);
+    text.set("partner_clothes_color", data.text["friend" + character.properties.friend_id + "_clothes_color"]);
+    text.set("partner_eye_number", data.text["friend" + character.properties.friend_id + "_eye_number"]);
+    text.set("partner_ear_number", data.text["friend" + character.properties.friend_id + "_ear_number"]);
+    text.set("partner_nose_number", data.text["friend" + character.properties.friend_id + "_nose_number"]);
+    text.set("partner_mouth_number", data.text["friend" + character.properties.friend_id + "_mouth_number"]);
+    text.set("partner_accessories_number", data.text["friend" + character.properties.friend_id + "_accessories_number"]);
+    drawing.setURL("partner_hair", data.image["friend" + character.properties.friend_id + "_hair"]);
+
+    findingPartner = false;
+    character.npc = AITypes["partner_follow"](character);
+
+    // TODO: Record the partner's details in the text/images/etc 
+    partner = character;
+
+    audio.narrate([
+        ["As they clumsily bumped into one another", []],
+        ["<i>bump</i>", []],
+        ["They didn't realise their lives would change forever", []],
+        ["<i>Hi</i>", []],
+        ["Said <#partner_name#>, and <%name%> replied", []],
+    ], () => {
+        audio.promptForSound("greeting", "Greet", "Respond to <#partner_name#>'s greeting", () => {
+            audio.narrate([
+                ["<i>Hello</i>", ["<#greeting#>"]],
+                ["Exactly", []],
+                ["<%name%> and <#partner_name#> spent the rest of the dance awkwardly moving and making smalltalk", []],
+                ["before leaving together", []]
+            ]);
+        });
+    })
+}
+
+const kiss = () => {
+
+    isKissing = false;
+    partner.body.setSize(35, 90, 9, 0);
+    globalPlayer.frame = 1;
+    audio.narrate([
+        ["<i>They kiss</i>", ["<#kiss#>"]],
+        ["How beautiful.", []],
+        ["<%name%> and <#partner_name#> continued on their journey together.", []]
+    ]);
+}
 
 const AITypes = {
+    "run-away": (character, properties) => {
+        return () => {
+            character.body.velocity.x = 75;
+            if (!character.animations.currentAnim.isPlaying) {
+                character.animations.play('walk', 4);
+            }
+        }
+    },
+
     "parent-follow": (character, properties) => {
         var activated = false;
 
@@ -577,27 +675,113 @@ const AITypes = {
         }
     },
 
+    "child_follow": (character) => {
+        var movingTowards = partner.position.x - 40;
+
+        return () => {
+            movingTowards = partner.position.x - 60;
+
+            if (movingTowards < character.body.position.x + 5 && movingTowards > character.body.position.x - 5) {
+                character.body.velocity.x = 0;
+                character.animations.stop();
+            } else if (movingTowards < character.body.position.x - 10) {
+                character.body.velocity.x = -75;
+                character.scale.x = -1;
+                if (!character.animations.currentAnim.isPlaying) {
+                    character.animations.play('walk', 4);
+                }
+            } else if (movingTowards > character.body.position.x + 10) {
+                character.body.velocity.x = 75;
+                character.scale.x = 1;
+                if (!character.animations.currentAnim.isPlaying) {
+                    character.animations.play('walk', 4);
+                }
+            }
+        }
+    },
+
+    "partner_follow": (character) => {
+        var movingTowards = globalPlayer.position.x - 60;
+
+        return () => {
+
+            if (isKissing) {
+                if (globalPlayer.position.x < character.body.position.x) {
+                    character.scale.x = -1;
+                } else {
+                    character.scale.x = 1;
+                }
+                character.body.velocity.x = 0;
+                character.animations.stop();
+                character.frame = 4;
+
+
+                game.physics.arcade.overlap(globalPlayer, character, (a, b) => {
+                    // If we overlap - Kiss
+                    kiss();
+                });
+            } else {
+                movingTowards = globalPlayer.position.x - 60;
+
+                if (movingTowards < character.body.position.x + 5 && movingTowards > character.body.position.x - 5) {
+                    character.body.velocity.x = 0;
+                    character.animations.stop();
+                } else if (movingTowards < character.body.position.x - 10) {
+                    character.body.velocity.x = -75;
+                    character.scale.x = -1;
+                    if (!character.animations.currentAnim.isPlaying) {
+                        character.animations.play('walk', 4);
+                    }
+                } else if (movingTowards > character.body.position.x + 10) {
+                    character.body.velocity.x = 75;
+                    character.scale.x = 1;
+                    if (!character.animations.currentAnim.isPlaying) {
+                        character.animations.play('walk', 4);
+                    }
+                }
+            }
+        }
+    },
+
     "dance": (character, properties) => {
         var startingX = character.body.position.x;
         var movingTowards = startingX;
 
         return () => {
 
-            if (movingTowards < character.body.position.x + 5 && movingTowards > character.body.position.x - 5) {
-                // We're there - wait some time then pick a new target
-                character.body.velocity.x = 0;
-                movingTowards = startingX + _.random(-100, 100);
-            } else if (movingTowards < character.body.position.x - 10) {
-                character.body.velocity.x = -60;
-                character.scale.x = -1;
-                if (!character.animations.currentAnim.isPlaying) {
-                    character.animations.play('dance', 4);
+            if (findingPartner) {
+                if (globalPlayer.body.position.x < character.body.position.x) {
+                    character.scale.x = -1;
+                } else {
+                    character.scale.x = 1;
                 }
-            } else if (movingTowards > character.body.position.x + 10) {
-                character.body.velocity.x = 60;
-                character.scale.x = 1;
-                if (!character.animations.currentAnim.isPlaying) {
-                    character.animations.play('dance', 4);
+
+                character.body.velocity.x = 0;
+                character.animations.stop();
+
+                game.physics.arcade.overlap(globalPlayer, character, (a, b) => {
+                    // If we overlap - we're now the partner
+                    selectPartner(character);
+                });
+
+
+            } else {
+                if (movingTowards < character.body.position.x + 5 && movingTowards > character.body.position.x - 5) {
+                    // We're there - wait some time then pick a new target
+                    character.body.velocity.x = 0;
+                    movingTowards = startingX + _.random(-100, 100);
+                } else if (movingTowards < character.body.position.x - 10) {
+                    character.body.velocity.x = -60;
+                    character.scale.x = -1;
+                    if (!character.animations.currentAnim.isPlaying) {
+                        character.animations.play('dance', 4);
+                    }
+                } else if (movingTowards > character.body.position.x + 10) {
+                    character.body.velocity.x = 60;
+                    character.scale.x = 1;
+                    if (!character.animations.currentAnim.isPlaying) {
+                        character.animations.play('dance', 4);
+                    }
                 }
             }
 
@@ -609,6 +793,14 @@ const AITypes = {
 
 
 const interactionTypes = {
+
+    kiss(self, i) {
+        audio.playOriginal("kiss");
+    },
+
+    partner_kiss(self, i) {
+        // TODO: play partner kiss
+    },
 
     closeDoor(self, i) {
         var door = doors[i.door];
@@ -634,64 +826,90 @@ const interactionTypes = {
         // use i.x + 64, i.x + 80, etc.
         i.frame = 1;
 
-        // graphics.createSprite([
-        //     ['<%toy1%>', [[0, 0]]]],
-        //     [],[],
-        //     32, 32, 1, (id) => {
-        //         itemsGroup.create(i.x + 64, i.y + 32, id);
-        //     }
-        // );
+        graphics.createSprite([
+            ['<%friends_toy_1%>', [[0, 0]]]],
+            [],[],
+            32, 32, 1, (id) => {
+                itemsGroup.create(i.x + 64, i.y + 64, id);
+            }
+        );
 
-        // graphics.createSprite([
-        //     ['<%toy2%>', [[0, 0]]]],
-        //     [],[],
-        //     32, 32, 1, (id) => {
-        //         itemsGroup.create(i.x + 80, i.y + 32, id);
-        //     }
-        // );
+        graphics.createSprite([
+            ['<%friends_toy2%>', [[0, 0]]]],
+            [],[],
+            32, 32, 1, (id) => {
+                itemsGroup.create(i.x + 80, i.y + 64, id);
+            }
+        );
 
         audio.narrate([
             ["As <%name%> opened the toybox, many toys spilled out.", []],
-            ["There was <%toy1%> and <%toy2%>.", []],
             ["There was even <%name%>'s favourite toy", []]
         ], () => {
             drawing.open("favouritetoy", "<%name%>'s favourite toy", "Draw <%name%>'s favourite toy", 32, 32, null, null, null, () => {
-                text.getOrAsk("favouritetoy", "<%name%>'s favourite toy", "Name <%name%>'s favourite toy", () => {
-                    audio.promptForSound("favourite", "<%name%>'s favourite toy", "How do you pronounce <#favouritetoy#>?", () => {
-                        audio.narrate([
-                            ["Oh yes a <#favouritetoy#>! There it is", []]], () => {
-
-                                graphics.createSprite([
-                                    ['<#favouritetoy#>', [[0, 0]]]],
-                                    [],[],
-                                    32, 32, 1, (id) => {
-                                        itemsGroup.create(i.x - 40, i.y + 32, id);
-                                    }
-                                );
-                        });
-                    });
-                });
+                graphics.createSprite([
+                    ['<#favouritetoy#>', [[0, 0]]]],
+                    [],[],
+                    32, 32, 1, (id) => {
+                        itemsGroup.create(i.x - 40, i.y + 64, id);
+                    }
+                );
             });
+        });
+    },
+
+    childStopRunning(self, p) {
+        canMove = true;
+        child.destroy();
+        child = null;
+    },
+
+    changeChildSprite(self, p) {
+        var oldChild = child;
+
+        var clothes = text.get("clothes_color");
+
+        if (p["new-sprite"] == "school-student") {
+            clothes = text.get("uniform");
+        }
+
+        createCharacter(p["new-sprite"], oldChild.position.x, oldChild.position.y, data.text["skin_color"],
+        text.get("partner_eye_color"),
+        clothes,
+        text.get("child_eye_number"),
+        text.get("child_ear_number"),
+        text.get("child_nose_number"),
+        text.get("child_mouth_number"),
+        text.get("child_accessories_number"), hairKey, (character) => {
+            child = character
+            game.physics.enable(child, Phaser.Physics.ARCADE);
+
+            currentSprite = p["new-sprite"];
+            child.body.velocity = oldChild.body.velocity;
+            child.position.x = child.position.x;
+            child.position.y = child.position.y;
+            child.npc = AITypes["child_follow"](child);
+            oldChild.destroy();
         });
     },
 
     changeSprite(self, p) {
         var oldPlayer = self.player;
 
-        var clothes = clothesColor;
+        var clothes = data.text["clothes_color"];
 
         if (p["new-sprite"] == "school-student") {
             clothes = text.get("uniform");
         }
 
-        createCharacter(p["new-sprite"], oldPlayer.position.x, oldPlayer.position.y, skinColor,
-    eyeColor,
+        createCharacter(p["new-sprite"], oldPlayer.position.x, oldPlayer.position.y, data.text["skin_color"],
+    data.text["eye_color"],
     clothes,
-    eyeNumber,
-    earNumber,
-    noseNumber,
-    mouthNumber,
-    accessoriesNumber, (player) => {
+    data.text["eye_number"],
+    data.text["ear_number"],
+    data.text["nose_number"],
+    data.text["mouth_number"],
+    data.text["accessories_number"], hairKey, (player) => {
             self.player = player;
             spriteChanged(self, p, oldPlayer);
         });
@@ -733,24 +951,158 @@ const interactionTypes = {
                     })
                     parseScript(scripts);
                 } else if (script.type == "modifyTilesheet") {
-                    graphics.modifyTilesheet(script.data);
+                    tilesheetModifications = tilesheetModifications.concat(script.data);
+                    graphics.modifyTilesheet(tilesheetModifications);
                     parseScript(scripts);
                 } else if (script.type == "useOwnHair") {
                     hairKey = "<#hair#>";
                     // Now reload the character
                     interactionTypes["changeSprite"](self, {"new-sprite": "school-student"});
                     parseScript(scripts);
+                } else if (script.type == "refreshChild") {
+                    createCharacter("baby", child.x, child.y, data.text["skin_color"],
+                        text.get("partner_eye_color"),
+                        text.get("clothes_color"),
+                        text.get("child_eye_number"),
+                        text.get("child_ear_number"),
+                        text.get("child_nose_number"),
+                        text.get("child_mouth_number"),
+                        text.get("child_accessories_number"), hairKey, (character) => {
+                            var oldChild = child;
+                            child = character;
+                            game.physics.enable(child, Phaser.Physics.ARCADE);
+                            charactersGroup.add(child);
+                            child.npc = AITypes["child_follow"](child);
+                            child.body.velocity = oldChild.body.velocity;
+                            child.position.x = oldChild.position.x;
+                            child.position.y = oldChild.position.y;
+                            oldChild.destroy();
+                            parseScript(scripts);
+                        }
+                    );
+                } else if (script.type == "findPartner") {
+                    findingPartner = true;
+                    parseScript(scripts);
+                } else if (script.type == "changeOutOfSchoolClothes") {
+                    interactionTypes["changeSprite"](self, {"new-sprite": "child"});
+                    createCharacter("child", partner.position.x, partner.position.y, text.get("partner_skin_color"),
+                        text.get("partner_eye_color"),
+                        text.get("partner_clothes_color"),
+                        text.get("partner_eye_number"),
+                        text.get("partner_ear_number"),
+                        text.get("partner_nose_number"),
+                        text.get("partner_mouth_number"),
+                        text.get("partner_accessories_number"), drawing.get("partner_hair"), (character) => {
+                            var oldPartner = partner;
+                            partner = character;
+                            charactersGroup.add(partner);
+                            partner.npc = AITypes["partner_follow"](partner);
+                            partner.body.velocity = oldPartner.body.velocity;
+                            partner.position.x = oldPartner.position.x;
+                            partner.position.y = oldPartner.position.y;
+                            oldPartner.destroy();
+                            parseScript(scripts);
+                        }
+                    );
+                } else if (script.type == "growOld") {
+                    interactionTypes["changeSprite"](self, {"new-sprite": "old"});
+                    createCharacter("old", partner.position.x, partner.position.y, text.get("partner_skin_color"),
+                        text.get("partner_eye_color"),
+                        text.get("partner_clothes_color"),
+                        text.get("partner_eye_number"),
+                        text.get("partner_ear_number"),
+                        text.get("partner_nose_number"),
+                        text.get("partner_mouth_number"),
+                        text.get("partner_accessories_number"), drawing.get("partner_hair"), (character) => {
+                            var oldPartner = partner;
+                            partner = character;
+                            charactersGroup.add(partner);
+                            partner.npc = AITypes["partner_follow"](partner);
+                            partner.body.velocity = oldPartner.body.velocity;
+                            partner.position.x = oldPartner.position.x;
+                            partner.position.y = oldPartner.position.y;
+                            oldPartner.destroy();
+                            parseScript(scripts);
+                        }
+                    );
+                } else if (script.type == "partnerDie") {
+                    partner.destroy();
+                    partner = null;
+                    parseScript(scripts);
+                } else if (script.type == "die") {
+                    // TODO: die
+                    self.player.destroy();
+                    self.player = null;
+                    parseScript(scripts);
+                } else if (script.type == "endGame") {
+                    upload.complete(() => {
+                        console.log("SHOW FINAL SCENE");
+                        parseScript(scripts);
+                    });
+                } else if (script.type == "prepareKiss") {
+                    // Not allowed to jump any more, the AI should stop following and instead is watching
+                    // and both get frames with their lips ready
+                    isKissing = true;
+
+                    globalPlayer.frame = 4;
+
+                    // MAke their body smaller so they can kiss
+                    partner.body.setSize(20, 90, 9, 0);
+
+                    parseScript(scripts);
+                } else if (script.type == "growUp") {
+                    interactionTypes["changeSprite"](self, {"new-sprite": "university-student"});
+
+                    createCharacter("university-student", partner.position.x, partner.position.y, text.get("partner_skin_color"),
+                        text.get("partner_eye_color"),
+                        text.get("partner_clothes_color"),
+                        text.get("partner_eye_number"),
+                        text.get("partner_ear_number"),
+                        text.get("partner_nose_number"),
+                        text.get("partner_mouth_number"),
+                        text.get("partner_accessories_number"), drawing.get("partner_hair"), (character) => {
+                            var oldPartner = partner;
+                            partner = character;
+                            charactersGroup.add(partner);
+                            partner.npc = AITypes["partner_follow"](partner);
+                            partner.body.velocity = oldPartner.body.velocity;
+                            partner.position.x = oldPartner.position.x;
+                            partner.position.y = oldPartner.position.y;
+                            oldPartner.destroy();
+                        }
+                    );
+
+                    // Generate baby
+                    // TODO: This is random for now - make it so that it's mostly coming from the parents
+                    text.set("child_eye_number", _.random(0, 4));
+                    text.set("child_ear_number", _.random(0, 4));
+                    text.set("child_nose_number", _.random(0, 4));
+                    text.set("child_mouth_number", _.random(0, 4));
+                    text.set("child_accessories_number", _.random(0, 4));
+
+
+                    createCharacter("baby", partner.position.x - 64, partner.position.y, data.text["skin_color"],
+                        text.get("partner_eye_color"),
+                        data.text["clothes_color"],
+                        text.get("child_eye_number"),
+                        text.get("child_ear_number"),
+                        text.get("child_nose_number"),
+                        text.get("child_mouth_number"),
+                        text.get("child_accessories_number"), hairKey, (character) => {
+                            child = character;
+                            charactersGroup.add(child);
+                            child.npc = AITypes["child_follow"](child);
+                        }
+                    );
+                    parseScript(scripts);
+                } else if (script.type == "childRunAway") {
+                    canMove = false;
+                    child.npc = AITypes["run-away"](child);
                 }
             }
         }
 
         parseScript(scripts);
-    },
-
-    save(self, p) {
-        upload.complete(() => {
-            console.log("SHOW FINAL SCENE");
-        });
     }
 }
 
@@ -769,6 +1121,14 @@ const interactSprite = (self, i) => {
 }
 
 module.exports = {
+    createChildInteractionPoint(x, y, properties) {
+        // Because of the way tiled edits objects - we just knock 64 off the y value
+        y -= 64;
+        var s = childInteractionGroup.create(x, y, "interaction");
+        game.physics.enable(s, Phaser.Physics.ARCADE);
+        interactions[x + "," + y] = properties;
+    },
+
     createInteractionPoint(x, y, properties) {
         // Because of the way tiled edits objects - we just knock 64 off the y value
         y -= 64;
@@ -780,14 +1140,20 @@ module.exports = {
     createInteractableSprite(x, y, properties) {
         // Because of the way tiled edits objects - we just knock 64 off the y value
         y -= 64;
+        var offset = JSON.parse(properties.offset);
+        x += offset[0];
+        y += offset[1];
         var s = interactableSpriteGroup.create(x, y, properties.sprite);
         game.physics.enable(s, Phaser.Physics.ARCADE);
         spriteInteractions[x + "," + y] = properties;
+        s.body.offset.setTo(0 - offset[0], 0 -offset[1]);
     },
 
     createObject(obj) {
         if (obj.type == "interaction") {
             this.createInteractionPoint(obj.x, obj.y, obj.properties);
+        } else if (obj.type == "child-interaction") {
+            this.createChildInteractionPoint(obj.x, obj.y, obj.properties);
         } else if (obj.type == "interactable-sprite") {
             this.createInteractableSprite(obj.x, obj.y, obj.properties);
         } else if (obj.type == "door") {
@@ -795,14 +1161,14 @@ module.exports = {
             doors[obj.properties.id].visible = false;
         } else if (obj.type == "player") {
             var self = this;
-            createCharacter("baby", obj.x + 32, obj.y, skinColor,
-    eyeColor,
-    clothesColor,
-    eyeNumber,
-    earNumber,
-    noseNumber,
-    mouthNumber,
-    accessoriesNumber, (player) => {
+            createCharacter("baby", obj.x + 32, obj.y, data.text["skin_color"],
+    data.text["eye_color"],
+    data.text["clothes_color"],
+    data.text["eye_number"],
+    data.text["ear_number"],
+    data.text["nose_number"],
+    data.text["mouth_number"],
+    data.text["accessories_number"], hairKey, (player) => {
                 self.player = player
                 game.physics.enable(self.player, Phaser.Physics.ARCADE);
                 self.player.body.gravity.y = 300;
@@ -819,16 +1185,14 @@ module.exports = {
     create() {
         this.keyboard = game.input.keyboard;
         interactionGroup = game.add.group();
+        childInteractionGroup = game.add.group();
 
         // this.win = game.add.sprite(256, 256, "tile");
         // game.physics.enable(this.win, Phaser.Physics.ARCADE);
 
         window.level1 = game.add.tilemap('level1');
         level1.addTilesetImage('level1-tiles', 'level1-tiles');
-        graphics.modifyTilesheet([
-            ["<%wallpaper%>", 0, 3],
-            ["<%wallpaper%>", 7, 21] // TODO: This should be the blackboard image 
-        ]);
+        graphics.modifyTilesheet(tilesheetModifications);
 
         const far1Layer = level1.createLayer('far1');
         far1Layer.resizeWorld();
@@ -886,8 +1250,19 @@ module.exports = {
         var lastYVelocity = this.player.body.velocity.y;
 
         // game.debug.body(this.player);
+        // if (partner != null) {
+        //     game.debug.body(partner);
+        //     window.partner = partner;
+        // }
+
         game.physics.arcade.collide(charactersGroup, this.level1_level);
         game.physics.arcade.collide(charactersGroup, doorsGroup);
+
+        if (child != null) {
+            game.physics.arcade.overlap(child, childInteractionGroup, (a, b) => {
+                interact(this, b);
+            });
+        }
 
         game.physics.arcade.overlap(this.player, interactionGroup, (a, b) => {
             interact(this, b);
@@ -897,7 +1272,9 @@ module.exports = {
             interactSprite(this, b);
         });
 
-        // UNCOMMENTWHENDONE
+        if (this.player == null) {
+            return; // Wait until the player is loaded
+        }
 
         var velocityChange = lastYVelocity - this.player.body.velocity.y;
 
@@ -939,13 +1316,21 @@ module.exports = {
             this.player.body.velocity.x = 0 - walkSpeed;
             this.player.scale.x = -1;
             if (this.player.body.onFloor() && !this.player.animations.currentAnim.isPlaying) {
-                this.player.animations.play('walk', 4);
+                if (isKissing) {
+                    this.player.animations.play('kiss', 4);
+                } else {
+                    this.player.animations.play('walk', 4);
+                }
             }
         } else if (canMove && this.keyboard.isDown(Phaser.Keyboard.D)) {
             this.player.body.velocity.x = walkSpeed;
             this.player.scale.x = 1;
             if (this.player.body.onFloor() && !this.player.animations.currentAnim.isPlaying) {
-                this.player.animations.play('walk', 4);
+                if (isKissing) {
+                    this.player.animations.play('kiss', 4);
+                } else {
+                    this.player.animations.play('walk', 4);
+                }
             }
         } else {
             this.player.body.velocity.x = 0;
@@ -954,7 +1339,7 @@ module.exports = {
 
         if (canMove && this.keyboard.isDown(Phaser.Keyboard.W) && this.player.body.onFloor()) {
             // Jump
-            if (jumpHeight > 0) {
+            if (jumpHeight > 0 && !isKissing) {
                 this.player.animations.play('jump', 4);
                 this.player.body.velocity.y = 0 - jumpHeight;
             }

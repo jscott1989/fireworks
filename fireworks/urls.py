@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^newplayer$', views.startupload, name='startupload'),
     url(r'^image/(?P<uploadid>.+)$', views.uploadimage,
         name='uploadimage'),
+    url(r'^setImage/(?P<uploadid>.+)$', views.setimage,
+        name='setimage'),
     url(r'^sound/(?P<uploadid>.+)$', views.uploadsound,
         name='uploadsound'),
     url(r'^text/(?P<uploadid>.+)$', views.uploadtext,

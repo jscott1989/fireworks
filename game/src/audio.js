@@ -10,7 +10,7 @@ import microphone from "./uis/microphone-error.js";
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;
 
-var sounds = {};
+window.sounds = {};
 
 module.exports = {
     all() {
