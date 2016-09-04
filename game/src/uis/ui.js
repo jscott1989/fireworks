@@ -1,7 +1,5 @@
-import text from './text';
-
-const past_regex = new RegExp("<%(.+?)%>");
-const current_regex = new RegExp("<#(.+?)#>");
+const past_regex = new RegExp("<%(.+?)%>", "g");
+const current_regex = new RegExp("<#(.+?)#>", "g");
 
 module.exports = {
     parseText(t) {
@@ -12,7 +10,7 @@ module.exports = {
 
         t = t.replace(current_regex, (r) => {
             const key = r.substr(2, r.length - 4);
-            return "<em>" + text.get(key) + "</em>";
+            return "<em>" + window.text[key] + "</em>";
         });
 
         return t;

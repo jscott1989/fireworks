@@ -9,9 +9,8 @@ from django.conf import settings
 
 
 def index(request):
-    # TODO: Select the character that has the fewest children
-    # (or if there's more than one, one at random from those)
-    if (models.Character.objects.filter(complete=True).count() > 0):
+    sofar = models.Character.objects.filter(complete=True).count()
+    if (sofar > 0):
         # Find the lowest number of children
         lowest_children = models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children").first()
         lowest_children_count = lowest_children.children.count()
@@ -24,6 +23,9 @@ def index(request):
             "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
             "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
         }
+
+        # Now we push extra information into the data for use by the story
+        data["text"]["sofar"] = sofar
     else:
         data = {
             "text": {},
@@ -35,16 +37,22 @@ def index(request):
 
 @csrf_exempt
 def startupload(request):
-    """Store the text, and return an upload ID."""
+    """Return an upload ID."""
     if "parent" in request.POST:
         parent = models.Character.objects.get(pk=request.POST["parent"])
     else:
         parent = None
     c = models.Character(parent=parent)
     c.save()
-    for k, v in json.loads(request.POST["text"]).items():
-        models.Text(character=c, key=k, value=v).save()
     return JsonResponse({"id": c.pk})
+
+
+@csrf_exempt
+def uploadtext(request, uploadid):
+    """Store text."""
+    c = models.Character.objects.get(pk=uploadid)
+    models.Text(character=c, key=request.POST['key'], value=request.POST['value']).save()
+    return JsonResponse({})
 
 
 @csrf_exempt

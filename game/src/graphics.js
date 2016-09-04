@@ -101,9 +101,14 @@ module.exports = {
                 });
                 loadFiles(files, callback);
             }
-            image.src = getURL(file[0]);
-            if (image.complete) {
-              image.onload();
+            var url = getURL(file[0]);
+            if (url == undefined) {
+                loadFiles(files, callback);
+            } else {
+                image.src = url;
+                if (image.complete) {
+                  image.onload();
+                }
             }
         };
 
@@ -164,7 +169,7 @@ module.exports = {
                 var image = new Image();
                 image.crossOrigin = "Anonymous";
                 image.onload = () => {
-                    canvasContext.drawImage(image, tile[1], tile[2], image.width, image.height);
+                    canvasContext.drawImage(image, tile[1] * 64, tile[2] * 64, image.width, image.height);
                     loadTile(tiles);
                 }
                 image.src = getURL(tile[0]);

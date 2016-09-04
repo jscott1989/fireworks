@@ -2,15 +2,17 @@
  * The drawing UI
  */
  import _ from "lodash";
+ import upload from '../upload';
+ import pause from '../pause';
  require("floodfill");
+ import ui from './ui';
 
 var container;
 
 var selectedColour;
 var selectedTool;
 
-window.drawings = {};
-
+var drawings = {};
 
 const tools = {
     pencil(x, y) {
@@ -19,6 +21,16 @@ const tools = {
 
         displayCanvasContext.fillStyle = selectedColour;
         displayCanvasContext.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+
+        if (isTiled) {
+            previewCanvasContext.fillStyle = selectedColour;
+            _.each(_.range(0, 3), (xx) => {
+                _.each(_.range(0, 3), (yy) => {
+                    previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
+                });
+            });
+        }
+        edited = true;
     },
 
     brush(x, y) {
@@ -29,19 +41,80 @@ const tools = {
         displayCanvasContext.fillStyle = selectedColour;
         displayCanvasContext.fillRect((x - 1) * pixelSize, y * pixelSize, pixelSize * 3, pixelSize);
         displayCanvasContext.fillRect(x * pixelSize, (y - 1) * pixelSize, pixelSize, pixelSize * 3);
+
+        if (isTiled) {
+            previewCanvasContext.fillStyle = selectedColour;
+            _.each(_.range(0, 3), (xx) => {
+                _.each(_.range(0, 3), (yy) => {
+                    previewCanvasContext.fillRect(xx * tWidth + x - 1, yy * tHeight + y, 3, 1 );
+                    previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y - 1, 1, 3 );
+                });
+            });
+        }
+        edited = true;
     },
 
     fill(x, y) {
+        if (!edited) {
+            // Just fill them all
+            canvasContext.fillStyle = selectedColour;
+            displayCanvasContext.fillStyle = selectedColour;
+            previewCanvasContext.fillStyle = selectedColour;
+
+            canvasContext.fillRect(0, 0, tWidth, tHeight);
+            displayCanvasContext.fillRect(0, 0, tWidth * pixelSize, tHeight * pixelSize);
+            displayCanvasContext.fillRect(0, 0, tWidth * 3, tHeight * 3);
+
+            edited = true;
+        }
         canvasContext.fillStyle = selectedColour;
         canvasContext.fillFlood(x, y);
 
         displayCanvasContext.fillStyle = selectedColour;
         displayCanvasContext.fillFlood(x * pixelSize, y * pixelSize);
+
+        // Simulating the flood fill is more trouble than it's worth, instead we will
+        // just recreate the image from scratch
+
+        var data = canvasContext.getImageData(0, 0, tWidth, tHeight).data;
+        _.each(_.range(canvas.width), (x) => {
+            _.each(_.range(canvas.height), (y) => {
+                var idx = (y * tWidth + x) * 4;
+                var red = data[idx];
+                var green = data[idx + 1];
+                var blue = data[idx + 2];
+                var alpha = data[idx + 3];
+
+                if (alpha == 0 && tBackground != null) {
+                    previewCanvasContext.fillStyle = tBackground;
+                } else {
+                    previewCanvasContext.fillStyle = "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+                }
+
+                _.each(_.range(3), (xx) => {
+                    _.each(_.range(3), (yy) => {
+                        previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
+                    });
+                });
+            });
+        });
     },
 
     eraser(x, y) {
         canvasContext.clearRect( x, y, 1, 1 );
         displayCanvasContext.clearRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+
+        _.each(_.range(3), (xx) => {
+            _.each(_.range(3), (yy) => {
+                if (tBackground != null) {
+                    previewCanvasContext.fillStyle = tBackground;
+                    previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
+                } else {
+                    previewCanvasContext.clearRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
+                }
+            });
+        });
+        edited = true;
     }
 }
 
@@ -50,13 +123,18 @@ const transparentColours = [
     "#8C8C8C", "#F0F0F0"
 ];
 
-const MAX_CANVAS_WIDTH = 600;
 const MAX_CANVAS_HEIGHT = 300;
 
 
 var pixelSize;
 var guideImage = new Image();
 guideImage.crossOrigin = "Anonymous";
+
+var isTiled;
+var tWidth;
+var tHeight;
+var tBackground;
+var edited = false;
 
 // On-screen elements
 var overCanvas;
@@ -66,6 +144,8 @@ var displayCanvasContext;
 var underCanvas;
 var underCanvasContext;
 var gridCheckbox;
+var previewCanvas;
+var previewCanvasContext;
 
 // Virtual elements
 var canvas = document.createElement('canvas');
@@ -90,7 +170,7 @@ const selectTool = (tool) => {
 const closeUI = () => {
     container.innerHTML = container.innerHTML;
     container.style.display = "none";
-    game.paused = false;
+    pause.resume('drawing');
 };
 
 const draw = (x, y) => {
@@ -138,13 +218,19 @@ module.exports = {
         return drawings[key];
     },
     
-    open(key, title, instruction, width, height, guide, callback) {
+    open(key, title, instruction, width, height, guide, background, tiled, callback) {
         if (_.has(drawings, key)) {
             callback(drawings[key]);
             return;
         }
 
+        isTiled = tiled;
+        tWidth = width;
+        tHeight = height;
+        tBackground = background;
         container = document.getElementById("drawing-ui");
+        previewCanvas = container.querySelector(".preview-canvas");
+        previewCanvasContext = previewCanvas.getContext('2d');
         overCanvas = container.querySelector(".over-canvas");
         overCanvasContext = overCanvas.getContext('2d');
         underCanvas = container.querySelector(".under-canvas");
@@ -152,6 +238,7 @@ module.exports = {
         displayCanvas = container.querySelector(".display-canvas");
         displayCanvasContext = displayCanvas.getContext('2d');
         gridCheckbox = container.querySelector(".show-grid");
+        edited = false;
 
         // Create colours
         var i = 0;
@@ -220,19 +307,38 @@ module.exports = {
             canvas.toBlob((blob) => {
                 closeUI();
                 drawings[key] = window.URL.createObjectURL(blob);
+                upload.uploadImage(key, blob);
                 callback(drawings[key]);
             });
         });
 
-        container.querySelector("h1").innerHTML = title;
-        container.querySelector("p").innerHTML = instruction;
+        container.querySelector("h1").innerHTML = ui.parseText(title);
+        container.querySelector("p").innerHTML = ui.parseText(instruction);
 
         canvas.width = width;
         canvas.height = height;
 
 
-        game.paused = true;
+        pause.pause('drawing');
         container.style.display = "block";
+
+        var mainContainer = container.querySelector(".main-container")
+
+        var MAX_CANVAS_WIDTH = mainContainer.offsetWidth;
+
+        if (tiled) {
+            // We have a preview - need to leave space for preview
+            MAX_CANVAS_WIDTH = mainContainer.offsetWidth - (50 + (width * 3));
+            previewCanvas.width = width * 3;
+            previewCanvas.height = height * 3;
+
+            previewCanvas.style.left = (mainContainer.offsetWidth * 0.75) - (width * 1.5) + "px";
+            previewCanvas.style.top = 60 + (MAX_CANVAS_HEIGHT / 2) - (height * 1.5) + "px";
+
+            previewCanvas.style.display = "block";
+        } else {
+            previewCanvas.style.display = "none";
+        }
 
         var rect = underCanvas.getBoundingClientRect();
 
@@ -254,6 +360,18 @@ module.exports = {
         overCanvas.width = width * pixelSize;
         overCanvas.height = height * pixelSize;
 
+        var canvasContainer = container.querySelector(".canvas-container");
+
+
+        // Center the canvases
+        var centrePos = MAX_CANVAS_WIDTH / 2;
+        var pos = centrePos - underCanvas.width / 2;
+        canvasContainer.style.width = underCanvas.width + "px";
+        canvasContainer.style.height = underCanvas.height + "px";
+        canvasContainer.style.left = pos + "px";
+        canvasContainer.style.top = (70 + (MAX_CANVAS_HEIGHT / 2 - (underCanvas.height / 2))) + "px";
+
+
         rect = underCanvas.getBoundingClientRect();
 
         // Draw the "transparent" indicator on under canvas
@@ -261,24 +379,33 @@ module.exports = {
         // First clear it
         underCanvasContext.clearRect(0, 0, rect.width, rect.height);
 
-        var rowToggle = 0;
-        const transparencyGridSize = 16;
-        _.each(_.range(rect.width / transparencyGridSize), (x) => {
-            var toggle = rowToggle;
-            rowToggle += 1;
-            if (rowToggle > 1) {
-                rowToggle = 0;
-            }
-            _.each(_.range(rect.height / transparencyGridSize), (y) => {
-                toggle += 1;
-                if (toggle > 1) {
-                    toggle = 0;
+        if (background != null) {
+            // We have a background colour
+            underCanvasContext.fillStyle = background;
+            underCanvasContext.fillRect(0, 0, rect.width, rect.height);
+            previewCanvasContext.fillStyle = background;
+            previewCanvasContext.fillRect(0, 0, width * 3, height * 3);
+        } else {
+            // Draw the transparency grid
+            var rowToggle = 0;
+            const transparencyGridSize = 16;
+            _.each(_.range(rect.width / transparencyGridSize), (x) => {
+                var toggle = rowToggle;
+                rowToggle += 1;
+                if (rowToggle > 1) {
+                    rowToggle = 0;
                 }
+                _.each(_.range(rect.height / transparencyGridSize), (y) => {
+                    toggle += 1;
+                    if (toggle > 1) {
+                        toggle = 0;
+                    }
 
-                underCanvasContext.fillStyle = transparentColours[toggle];
-                underCanvasContext.fillRect(x * transparencyGridSize, y * transparencyGridSize, transparencyGridSize, transparencyGridSize);
+                    underCanvasContext.fillStyle = transparentColours[toggle];
+                    underCanvasContext.fillRect(x * transparencyGridSize, y * transparencyGridSize, transparencyGridSize, transparencyGridSize);
+                });
             });
-        });
+        }
 
         // Draw the guide if needed
         if (guide != null) {

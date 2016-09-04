@@ -20,11 +20,13 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^startupload$', views.startupload, name='startupload'),
-    url(r'^uploadimage/(?P<uploadid>.+)$', views.uploadimage,
+    url(r'^newplayer$', views.startupload, name='startupload'),
+    url(r'^image/(?P<uploadid>.+)$', views.uploadimage,
         name='uploadimage'),
-    url(r'^uploadsound/(?P<uploadid>.+)$', views.uploadsound,
+    url(r'^sound/(?P<uploadid>.+)$', views.uploadsound,
         name='uploadsound'),
-    url(r'^markcomplete/(?P<uploadid>.+)$', views.markcomplete,
+    url(r'^text/(?P<uploadid>.+)$', views.uploadtext,
+        name='uploadtext'),
+    url(r'^complete/(?P<uploadid>.+)$', views.markcomplete,
         name='markcomplete')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

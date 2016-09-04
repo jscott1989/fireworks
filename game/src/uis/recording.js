@@ -3,6 +3,7 @@
  */
 
 import ui from './ui';
+import pause from '../pause';
 
 var container;
 var statusText;
@@ -18,12 +19,13 @@ var countdownTimeout;
 var beepAudio = new Audio("/s/assets/ui/beep.mp3");
 var playingAudio;
 var url;
+var returnBlob;
 
 const closeUI = () => {
     document.removeEventListener('keydown', keydown);
     container.innerHTML = container.innerHTML;
     container.style.display = "none";
-    game.paused = false;
+    pause.resume('recording');
 }
 
 
@@ -105,6 +107,7 @@ const startRecording = () => {
         var blob = new Blob(chunks, {type: "audio/webm"});
         chunks = [];
 
+        returnBlob = blob;
         url = window.URL.createObjectURL(blob);
 
         play();
@@ -143,7 +146,7 @@ const stopRecording = () => {
 
 const save = () => {
     closeUI();
-    callback(url);
+    callback(url, returnBlob);
 }
 
 const play = () => {
@@ -172,6 +175,7 @@ const playPressed = () => {
 
 const reset = () => {
     url = null;
+    returnBlob = null;
     resetAfterStop();
 }
 
@@ -192,10 +196,10 @@ module.exports = {
         container.querySelector("p").innerHTML = ui.parseText(instruction);
         isRecording = false;
         recordingCountdown = 3;
-        game.paused = true;
+        pause.pause('recording');
         container.style.display = "block";
 
-        resetAfterStop();
+        reset();
     },
 
     close() {

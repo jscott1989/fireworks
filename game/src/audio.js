@@ -4,18 +4,20 @@
 import _ from 'lodash';
 import recording from "./uis/recording";
 import narrate from "./uis/narrate";
+import upload from './upload';
+import microphone from "./uis/microphone-error.js";
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;
 
-window.sounds = {};
+var sounds = {};
 
 module.exports = {
     all() {
         return sounds;
     },
 
-    init() {
+    init(callback) {
         /**
          * We want permission to record from the start - so prompt here.
          */
@@ -30,22 +32,34 @@ module.exports = {
 
             window.frequencyData = new Uint8Array(audioAnalyser.frequencyBinCount);
 
+            callback();
         }, (error) => {
             // TODO: Deal with error
+            microphone.open(error.name + " " + error.message);
         });
     },
 
     /**
      * Play an audio, or prompt for new if needed
      */
-    playOriginal(key, title, instruction) {
+    playOriginal(key, title, instruction, callback) {
         if (_.has(sounds, key)) {
             var audio = new Audio(sounds[key]);
+            audio.addEventListener("ended", () => {
+                if (callback != null) {
+                    callback();
+                }
+            });
             audio.play();
         } else {
             // We haven't got a sound - need to prompt for one
             this.promptForSound(key, title, instruction, () => {
                 var audio = new Audio(sounds[key]);
+                audio.addEventListener("ended", () => {
+                    if (callback != null) {
+                        callback();
+                    }
+                });
                 audio.play();
             });
         }
@@ -56,8 +70,9 @@ module.exports = {
         if (_.has(sounds, key)) {
             callback();
         } else {
-            recording.open(title, instruction, (url) => {
+            recording.open(title, instruction, (url, blob) => {
                 sounds[key] = url;
+                upload.uploadSound(key, blob);
                 callback();
             });
         }
@@ -67,7 +82,7 @@ module.exports = {
         if (set.length > 0) {
             const s = set.shift();
             narrate.open(s[0], s[1], () => {
-                this.narrate(set);
+                this.narrate(set, callback);
             });
         } else if (callback != null) {
             callback();

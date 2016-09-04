@@ -16,13 +16,19 @@
     background: #E0E0E0;
     border: 1px solid black;
     border-radius: 5px;
+    -webkit-user-select: none;
+
+    * {
+        -webkit-user-select: none;
+    }
 
     header {
         position: absolute;
         top: 0px;
         left: 0px;
         width: 100%;
-        background: pink;
+        color: #FFF;
+        background: #406791;
         height: 30px;
 
         em, strong {
@@ -65,6 +71,12 @@
     top: auto;
     bottom: 10px;
 
+    .instruction {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
     strong {
         font-weight: strong;
         color: blue;
@@ -76,9 +88,18 @@
     }
 }
 
+#upload-error-ui {
+    width: 400px;
+    height: 160px;
+}
+
 #colour-input-ui {
     width: 289px;
     height: 112px;
+
+    button {
+        padding: 11px;
+    }
 }
 
 #text-input-ui {
@@ -144,15 +165,48 @@
     }
 }
 
+#menu-ui {
+    width: 500px;
+    height: 240px;
+    display: block;
+
+    strong {
+        font-weight: bold;
+    }
+
+    footer {
+        text-align: center;
+    }
+}
+
+#chrome-only-ui {
+    width: 300px;
+    height: 300px;
+}
+
+#microphone-error-ui {
+    width: 300px;
+    height: 300px;
+}
+
+#microphone-request-ui {
+    width: 600px;
+    height: 300px;
+
+    text-align: center;
+    display: block;
+}
 
 #drawing-ui {
     width: 700px;
     height: 400px;
 
+    .main-container {
+        margin-right: 120px;
+    }
+
     .canvas-container {
-        position: relative;
-        // width: 320px;
-        // height: 320px;
+        position: absolute;
         margin: auto;
 
         canvas {
@@ -162,6 +216,10 @@
 
             cursor: pointer;
         }
+    }
+
+    .preview-canvas {
+        position: absolute;
     }
 
     .colours {
@@ -235,11 +293,22 @@
 }
 
 button {
-    border-radius: 18px;
-    background-color: red;
-    padding: 1em;
-    font-weight: bold;
-    border-color: black;
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 15px;
+  background: #406791;
+  padding: 10px 20px 10px 20px;
+  border: solid #1f628d 1px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4c7c99;
+  text-decoration: none;
 }
 
 input.text {
@@ -256,4 +325,19 @@ input.text {
 
 .clear {
     clear: both;
+}
+
+
+#menu-container, #microphone-container {
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    padding: 0;
+    margin: auto;
+    display: none;
+
+    background: url(/s/assets/bg.png) repeat;
 }

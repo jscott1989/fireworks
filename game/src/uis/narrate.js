@@ -3,6 +3,7 @@
  */
 
 import ui from './ui';
+import pause from '../pause';
 
 var container;
 var textContainer;
@@ -17,7 +18,7 @@ const close = () => {
     document.removeEventListener('keydown', close);
 
     container.style.display = "none";
-    game.paused = false;
+    pause.resume('narrate');
     if (audioPlayer != null) {
         audioPlayer.pause();
     }
@@ -49,7 +50,7 @@ module.exports = {
         }, 500);
 
         textContainer.innerHTML = ui.parseText(textStr);
-        game.paused = true;
+        pause.pause('narrate');
         container.style.display = "block";
         play();
     }

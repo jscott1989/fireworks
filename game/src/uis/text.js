@@ -3,6 +3,9 @@
  */
 
 import _ from 'lodash';
+import upload from '../upload';
+import pause from '../pause';
+import ui from './ui';
 
 var container;
 
@@ -10,11 +13,11 @@ var callback;
 
 const closeUI = () => {
     container.style.display = "none";
-    game.paused = false;
+    pause.resume('text');
 }
 
 
-var text = {};
+window.text = {};
 
 module.exports = {
     all() {
@@ -31,6 +34,7 @@ module.exports = {
 
     set(key, value) {
         text[key] = value;
+        upload.uploadText(key, value);
     },
 
     getOrAsk(key, title, instruction, c) {
@@ -39,6 +43,7 @@ module.exports = {
         } else {
             this.open(title, instruction, (t) => {
                 text[key] = t;
+                upload.uploadText(key, t);
                 c(t);
             });
         }
@@ -52,11 +57,11 @@ module.exports = {
         container.querySelector("form").addEventListener("submit", this.onSavePressed);
 
         // Reset the state of the menu
-        container.querySelector("h1").innerHTML = title;
-        container.querySelector("p").innerHTML = instruction;
+        container.querySelector("h1").innerHTML = ui.parseText(title);
+        container.querySelector("p").innerHTML = ui.parseText(instruction);
         container.querySelector("input").value = "";
         
-        game.paused = true;
+        pause.pause('text');
         container.style.display = "block";
 
         container.querySelector("input").focus();

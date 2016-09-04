@@ -23,10 +23,16 @@
                 <div class="instructions">
                     <p>test</p>
                 </div>
-                <div class="canvas-container">
-                    <canvas width="320" height="320" class="under-canvas"></canvas>
-                    <canvas width="320" height="320" class="display-canvas"></canvas>
-                    <canvas width="320" height="320" class="over-canvas"></canvas>
+                <div class="main-container">
+                    <div class="canvas-container">
+                        <canvas width="320" height="320" class="under-canvas"></canvas>
+                        <canvas width="320" height="320" class="display-canvas"></canvas>
+                        <canvas width="320" height="320" class="over-canvas"></canvas>
+                    </div>
+
+                    <canvas width="32" height="32" class="preview-canvas">
+
+                    </canvas>
                 </div>
 
                 <div class="toolbox">
@@ -130,42 +136,90 @@
 
         <div class="ui" id="narration-ui">
             <p>Test test blah</p>
-        </div>
 
-        <div class="ui" id="save-ui">
-            <header>
-               <h1><span class="name">J</span> Died</h1>
-            </header>
-
-            <div class="body">
-                <p>We're really sad to see them go. With your permission we'd like the character to live on in future games.</p>
-
-                <p>This will involve the text, images, and some of the audio you contributed being uploaded to our server. This content will be linked to <span class="name">J</span> and will otherwise not be linked to you.</p>
-
-                <p>User contributed content is a large part of this game so if you'd contribute your wonderful drawings and sounds then that'd be great. If not, you can still continue to the obituary :).</p>
-
-                <strong>Can we upload <span class="name"></span>?</strong>
+            <div class="instruction">
+                Press any key to continue
             </div>
-            <footer>
-                <button class="yes">Sure</button>
-                <button class="no">I'd rather not</button>
-            </footer>
         </div>
 
-        <div class="ui" id="upload-ui">
+        <div class="ui" id="upload-error-ui">
             <header>
-               <h1>Uploading</h1>
+                <h1>Connection Error</h1>
             </header>
-
             <div class="body">
-                <div class="progress">
-                    <div class="complete"></div>
-                    <div class="status">100%</div>
+                <p>There was a problem communicating with the server.</p>
+                <p>Check your internet connection.</p>
+                <blockquote></blockquote>
+                <p>We will try again in <span class="countdown">5</span> seconds.</p>
+            </div>
+        </div>
+
+        <div class="ui" id="microphone-error-ui">
+            <header>
+                <h1>Microphone Error</h1>
+            </header>
+            <div class="body">
+                <p>You must grant permission for us to access your microphone to play this game.</p>
+                <blockquote></blockquote>
+                <p>To change your preference, click on the camera icon (with a cross in front of it) on the right side of the address bar and click "Always allow".</p>
+                <p>Refresh the page after doing this.</p>
+            </div>
+        </div>
+
+        <div class="ui" id="chrome-only-ui">
+            <header>
+                <h1>Unsupported Browser</h1>
+            </header>
+            <div class="body">
+                <p>I know, I know... what is this the 90s?</p>
+
+                <p>This game uses some experimental APIs that are only implemented in Google Chrome.</p>
+
+                <p>It's not playable in anything else.</p>
+
+                <p>Please do <a href="https://www.google.com/chrome/">get Chrome</a> and come back!</p>
+            </div>
+        </div>
+
+        <div id="microphone-container">
+            <div class="ui" id="microphone-request-ui">
+                <header>
+                    <h1>We need to use your microphone</h1>
+                </header>
+                <div class="body">
+                    <p>This game involves you contributing short sounds using the microphone.</p>
+
+                    <p>If you do not permit access, you will not be able to play the game.</p>
+
+                    <p>You will be presented with an explicit recording interface whenever the microphone is accessed - and will be given the opportunity to re-record any sound clips you are dissatisfied with.</p>
+
+                    <p>These short sound clips, as well as any other content you contribute, will be uploaded to the game servers to be used in the game. All content will be stored anonymously and is in no way traceable to its creator. The content will not be used for any other purposes.</p>
+
+                    <p>To continue to the game, click "Continue"</p>
+
+                    <button class="continue">Continue</button>
                 </div>
             </div>
-            <footer>
-                <button class="continue">Continue</button>
-            </footer>
+        </div>
+
+        <div id="menu-container">
+            <div class="ui" id="menu-ui">
+                <header>
+                    <h1>Story of Everyone</h1>
+                </header>
+                <div class="body">
+                    <p>The Story of Everyone was created as part of #rainbowjam16 by <strong>Xiyun Weng</strong> and <strong>Jonathan Scott</strong>. The theme of the game jam was <strong>Identity</strong></p>
+
+                    <p>The game explores ideas around the contextual nature of identity, and involves players building the identity of their characters through play.</p>
+
+                    <p>You control the character using <strong>W, A, S, D</strong>. Other controls will be presented as they are required.</p>
+
+                    <p>We hope you enjoy our game!</p>
+                </div>
+                <footer>
+                    <button class="begin">Start Game</button>
+                </footer>
+            </div>
         </div>
     </div>
 </body>

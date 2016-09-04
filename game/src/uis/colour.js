@@ -4,11 +4,12 @@
 
 import _ from 'lodash';
 import text from './text';
+import pause from '../pause';
 
 var container;
 
 var callback;
-var key;
+var sKey;
 
 function rgb2hex(rgb) {
     rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/);
@@ -20,13 +21,13 @@ function rgb2hex(rgb) {
 
 const closeUI = () => {
     container.style.display = "none";
-    game.paused = false;
+    pause.resume('colour');
 }
 
 module.exports = {
     open(key, title, instruction, c) {
         callback = c;
-        key = key;
+        sKey = key;
         container = document.getElementById("colour-input-ui");
 
         // Bind buttons
@@ -38,7 +39,7 @@ module.exports = {
         container.querySelector("h1").innerHTML = title;
         container.querySelector("p").innerHTML = instruction;
         
-        game.paused = true;
+        pause.pause('colour');
         container.style.display = "block";
     },
 
@@ -46,7 +47,7 @@ module.exports = {
         e.preventDefault();
         closeUI();
         var v = rgb2hex(e.srcElement.style.background);
-        text.set(key, v);
+        text.set(sKey, v);
         callback(v);
         container.innerHTML = container.innerHTML;
     }
