@@ -27,6 +27,8 @@ urlpatterns = [
         name='setimage'),
     url(r'^sound/(?P<uploadid>.+)$', views.uploadsound,
         name='uploadsound'),
+    url(r'^setSound/(?P<uploadid>.+)$', views.setsound,
+        name='setsound'),
     url(r'^text/(?P<uploadid>.+)$', views.uploadtext,
         name='uploadtext'),
     url(r'^complete/(?P<uploadid>.+)$', views.markcomplete,

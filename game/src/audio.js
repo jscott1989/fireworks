@@ -17,6 +17,12 @@ module.exports = {
         return sounds;
     },
 
+
+    setURL(key, value) {
+        sounds[key] = value;
+        upload.setSound(key, value);
+    },
+
     init(callback) {
         /**
          * We want permission to record from the start - so prompt here.

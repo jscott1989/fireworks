@@ -15,21 +15,21 @@ ROOT_URL = "http://localhost:8000"
 def index(request):
     data = {}
     sofar = models.Character.objects.filter(complete=True).count()
-    if (sofar > 0):
-        # Find the lowest number of children
-        lowest_children = models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children").first()
-        lowest_children_count = lowest_children.children.count()
+    # if (sofar > 0):
+    #     # Find the lowest number of children
+    #     lowest_children = models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children").first()
+    #     lowest_children_count = lowest_children.children.count()
 
-        all_lowest_children = [x for x in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).filter(num_children=lowest_children_count).all()]
-        c = random.choice(all_lowest_children)
-        data["parent"] = c.pk
-        # "parent": c.pk,
-        # "text": {i.key: i.value for i in c.texts.all()},
-        # "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
-        # "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
+    #     all_lowest_children = [x for x in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).filter(num_children=lowest_children_count).all()]
+    #     c = random.choice(all_lowest_children)
+    #     data["parent"] = c.pk
+    #     # "parent": c.pk,
+    #     # "text": {i.key: i.value for i in c.texts.all()},
+    #     # "image": {i.key: settings.MEDIA_URL + str(i.image) for i in c.images.all()},
+    #     # "sound": {i.key: settings.MEDIA_URL + str(i.sound) for i in c.sounds.all()}
 
-        # Now we push extra information into the data for use by the story
-        data["text"]["sofar"] = sofar
+    #     # Now we push extra information into the data for use by the story
+    #     data["text"]["sofar"] = sofar
 
     # Now we must fill in blank information
     if "text" not in data:
@@ -95,7 +95,9 @@ def index(request):
     friend_names = ["Chris", "Charlie", "Jamie", "Skyler", "Justice", "Dakota", "Lennon", "Rowan", "Hunter", "Harper", "Dylan", "Jordyn", "Blake"]
     random.shuffle(friend_names)
     for i in range(1, 9):
-        default("text", "friend%s_name" % i, friend_names.pop())
+        name = friend_names.pop()
+        default("text", "friend%s_name" % i, name)
+        default("sound", "friend%s_name" % i, "/s/assets/demo/%s.mp3" % name)
         default("text", "friend%s_skin_color" % i, random.choice(SKIN_COLORS))
         default("text", "friend%s_eye_color" % i, random.choice(EYE_COLORS))
         default("text", "friend%s_clothes_color" % i, random.choice(CLOTHES_COLORS))
@@ -105,6 +107,10 @@ def index(request):
         default("text", "friend%s_mouth_number" % i, random.choice(MOUTH_NUMBERS))
         default("text", "friend%s_accessories_number" % i, random.choice(ACCESSORIES_NUMBERS))
         default("image", "friend%s_hair" % i, random.choice(HAIRS))
+        default("sound", "friend%s_kiss" % i, "/s/assets/demo/kiss.mp3")
+        default("sound", "friend%s_cry" % i, "/s/assets/demo/cry.mp3")
+        default("sound", "friend%s_bump" % i, "/s/assets/demo/bump.mp3")
+        default("sound", "friend%s_greeting" % i, "/s/assets/demo/greeting.mp3")
 
     # Teacher
     default("text", "teacher_skin_color", random.choice(SKIN_COLORS))
@@ -124,6 +130,14 @@ def index(request):
     default("text", "partner_name", "Xiyun")
     default("text", "name", "Jamie")
 
+    default("sound", "parent_name", "/s/assets/narration/jonny.mp3")
+    default("sound", "parent_greeting", "/s/assets/narration/jonny_greeting.mp3")
+    default("sound", "parent_cry", "/s/assets/narration/jonny_cry.mp3")
+    default("sound", "partner_name", "/s/assets/narration/xiyun.mp3")
+    default("sound", "partner_greeting", "/s/assets/narration/xiyun_greeting.mp3")
+    default("sound", "partner_cry", "/s/assets/narration/xiyun_cry.mp3")
+    default("sound", "name", "/s/assets/narration/jamie.mp3")
+
     # Children's room
 
     default("image", "friends_toy1", "/s/assets/demo/toys/toy_1.png")
@@ -132,6 +146,7 @@ def index(request):
     # School
 
     default("image", "blackboard", random.choice(BLACKBOARDS))
+    default("sound", "music", "/s/assets/narration/jonny_music.mp3")
 
     # Graveyard
     default("image", "friends_gravestone1", random.choice(GRAVESTONES))
@@ -175,6 +190,19 @@ def setimage(request, uploadid):
     c = models.Character.objects.get(pk=uploadid)
 
     im = models.Image(character=c, key=request.POST['key'])
+
+    img_temp = NamedTemporaryFile(delete=True)
+    img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())
+    img_temp.flush()
+
+    im.save()
+    return JsonResponse({})
+
+@csrf_exempt
+def setsound(request, uploadid):
+    c = models.Character.objects.get(pk=uploadid)
+
+    im = models.Sound(character=c, key=request.POST['key'])
 
     img_temp = NamedTemporaryFile(delete=True)
     img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())

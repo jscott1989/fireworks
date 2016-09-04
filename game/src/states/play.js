@@ -536,6 +536,11 @@ const selectPartner = (character) => {
     text.set("partner_mouth_number", data.text["friend" + character.properties.friend_id + "_mouth_number"]);
     text.set("partner_accessories_number", data.text["friend" + character.properties.friend_id + "_accessories_number"]);
     drawing.setURL("partner_hair", data.image["friend" + character.properties.friend_id + "_hair"]);
+    audio.setURL("partner_name", data.sound["friend" + character.properties.friend_id + "_name"])
+    audio.setURL("partner_kiss", data.sound["friend" + character.properties.friend_id + "_kiss"])
+    audio.setURL("partner_cry", data.sound["friend" + character.properties.friend_id + "_cry"])
+    audio.setURL("partner_bump", data.sound["friend" + character.properties.friend_id + "_bump"])
+    audio.setURL("partner_greeting", data.sound["friend" + character.properties.friend_id + "_greeting"])
 
     findingPartner = false;
     character.npc = AITypes["partner_follow"](character);
@@ -544,18 +549,18 @@ const selectPartner = (character) => {
     partner = character;
 
     audio.narrate([
-        ["As they clumsily bumped into one another", []],
-        ["<i>bump</i>", []],
-        ["They didn't realise their lives would change forever", []],
-        ["<i>Hi</i>", []],
-        ["Said <#partner_name#>, and <%name%> replied", []],
+        ["As they clumsily bumped into one another", ["/s/assets/narration/astheyclumsily.mp3"]],
+        ["<i>bump</i>", ["<#bump#>", "<#partner_bump#>"]],
+        ["They didn't yet realise the importance of this moment", ["/s/assets/narration/theydidntyet.mp3"]],
+        ["<i>Hi</i>", ["<#partner_greeting#>"]],
+        ["Said <#partner_name#>, and <%name%> replied", ["/s/assets/narration/said.mp3", "<#partner_name#>", "/s/assets/narration/and.mp3", "<%name%>", "/s/assets/narration/replied.mp3"]],
     ], () => {
         audio.promptForSound("greeting", "Greet", "Respond to <#partner_name#>'s greeting", () => {
             audio.narrate([
                 ["<i>Hello</i>", ["<#greeting#>"]],
-                ["Exactly", []],
-                ["<%name%> and <#partner_name#> spent the rest of the dance awkwardly moving and making smalltalk", []],
-                ["before leaving together", []]
+                ["Exactly", ["/s/assets/narration/exactly.mp3"]],
+                ["<%name%> and <#partner_name#> spent the rest of the dance moving awkwardly", ["<%name%>", "/s/assets/narration/and.mp3", "<#partner_name#>", "/s/assets/narration/spenttherest.mp3"]],
+                ["before leaving together", ["/s/assets/narration/beforeleaving.mp3"]]
             ]);
         });
     })
@@ -567,9 +572,9 @@ const kiss = () => {
     partner.body.setSize(35, 90, 9, 0);
     globalPlayer.frame = 1;
     audio.narrate([
-        ["<i>They kiss</i>", ["<#kiss#>"]],
-        ["How beautiful.", []],
-        ["<%name%> and <#partner_name#> continued on their journey together.", []]
+        ["<i>They kiss</i>", ["<#kiss#>", "<#partner_kiss#>"]],
+        ["How beautiful.", ["/s/assets/narration/howbeautiful.mp3"]],
+        ["<%name%> and <#partner_name#> continued on their journey together.", ["<%name%>", "/s/assets/narration/and.mp3", "<#partner_name#>", "/s/assets/narration/continuedon.mp3"]]
     ]);
 }
 
@@ -799,7 +804,7 @@ const interactionTypes = {
     },
 
     partner_kiss(self, i) {
-        // TODO: play partner kiss
+        audio.playOriginal("partner_kiss");
     },
 
     closeDoor(self, i) {
@@ -843,8 +848,8 @@ const interactionTypes = {
         );
 
         audio.narrate([
-            ["As <%name%> opened the toybox, many toys spilled out.", []],
-            ["There was even <%name%>'s favourite toy", []]
+            ["As <%name%> opened the toybox, many toys spilled out.", ["/s/assets/narration/as.mp3", "<%name%>", "/s/assets/narration/openedthe.mp3"]],
+            ["There was even <%name%>'s favourite toy", ["/s/assets/narration/therewaseven.mp3", "<%name%>", "/s/assets/narration/favouritetoy.mp3"]]
         ], () => {
             drawing.open("favouritetoy", "<%name%>'s favourite toy", "Draw <%name%>'s favourite toy", 32, 32, null, null, null, () => {
                 graphics.createSprite([
@@ -1286,7 +1291,7 @@ module.exports = {
                     audio.playOriginal("bump", null, null, () => {
                         if (!(_.has(audio.all(), "cry"))) {
                         audio.narrate([
-                            ["That was quite a fall. <%name%> reacted in the way that children often do, by crying.", []]], () => {
+                            ["That was quite a fall. <%name%> reacted in the way that children often do, by crying.", ["/s/assets/narration/thatwasquite.mp3", "<%name%>", "/s/assets/narration/reacted.mp3"]]], () => {
                                 audio.playOriginal("cry", "Cry", "Record the sound of crying", () => {
                                     canMove = true;
                                 });
@@ -1302,9 +1307,9 @@ module.exports = {
             // Small bump
             if (!(_.has(audio.all(), "bump"))) {
                 audio.narrate([
-                        ["<%parent_name%> and <%partner_name%> could always tell when <%name%> was coming", []],
-                        ["That was because of the distinctive sound that <%name%> made", []],
-                        ["I can't actually remember what that sound is though. Help me out?", []]], () => {
+                        ["<%parent_name%> and <%partner_name%> could always tell when <%name%> was coming", ["<%parent_name%>", "/s/assets/narration/and.mp3", "<%partner_name%>", "/s/assets/narration/couldalwaystell.mp3", "<%name%>", "/s/assets/narration/wascoming.mp3"]],
+                        ["That was because of the distinctive sound that <%name%> made", ["/s/assets/narration/thatwasbecause.mp3", "<%name%>", "/s/assets/narration/made.mp3"]],
+                        ["I can't actually remember what that sound is though. Help me out?", ["/s/assets/narration/icantactually.mp3"]]], () => {
                     audio.playOriginal("bump", "Bump", "Record the sound that the child makes when hitting the step");
                 });
             } else {

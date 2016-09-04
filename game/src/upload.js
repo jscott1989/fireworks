@@ -93,6 +93,10 @@ module.exports = {
         upload('/sound/' + uploadId, fd, () => {}, true);
     },
 
+    setSound(key, value) {
+        upload("/setSound/" + uploadId, {key: key, value: value});
+    },
+
     complete(callback) {
         upload('/complete/' + uploadId, {}, () => {
             callback();

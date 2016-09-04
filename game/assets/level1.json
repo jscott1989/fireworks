@@ -111,7 +111,7 @@
                  "name":"introduction",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"There was once a...\", []],\n\t[\"Oh, hello. I'm the storyteller.\", []],\n\t[\"It's my job to document the lives of all of these people.\", []],\n\t[\"So far, I've done <%sofar%>, and I'm really starting to forget things.\", []],\n\t[\"Maybe you can help! It's really easy, watch\", []],\n\t[\"Once upon a time, <%parent_name%> met <%partner_name%> and things were good.\", []],\n\t[\"After some time, they had a child whom they named <%name%>.\", []],\n\t[\"This child was much like any other child, and spent its early life learning to control its body (using W A S and D).\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"There was once a...\", [\"\/s\/assets\/narration\/therewasoncea.mp3\"]],\n\t[\"Oh, hello. I'm the storyteller.\", [\"\/s\/assets\/narration\/ohhello.mp3\"]],\n\t[\"It's my job to document the lives of all of these people.\", [\"\/s\/assets\/narration\/itsmyjob.mp3\"]],\n\t[\"So far, I've done <%sofar%>, and I'm really starting to forget things.\", [\"\/s\/assets\/narration\/sofar.mp3\", \"\/s\/assets\/narration\/zero.mp3\", \"\/s\/assets\/narration\/startingtoforgetthings.mp3\"]],\n\t[\"Maybe you can help! It's really easy, watch\", [\"\/s\/assets\/narration\/maybeyoucanhelp.mp3\"]],\n\t[\"Once upon a time, <%parent_name%> met <%partner_name%> and things were good.\", [\"\/s\/assets\/narration\/onceuponatime2.mp3\", \"<%parent_name%>\", \"\/s\/assets\/narration\/met.mp3\", \"<%partner_name%>\", \"\/s\/assets\/narration\/andthingsweregood.mp3\"]],\n\t[\"After some time, they had a child whom they named <%name%>.\", [\"\/s\/assets\/narration\/aftersometime.mp3\", \"<%name%>\"]],\n\t[\"This child was much like any other child, and spent its early life learning to control its body (using W A S and D).\", [\"\/s\/assets\/narration\/thischildwas.mp3\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -133,7 +133,7 @@
                  "name":"shout downstairs",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<i>(sound of parent)<\/i>\", []],\n\t[\"<%name%> heard a familiar sound and headed downstairs.\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<i>(sound of parent)<\/i>\", [\"<%parent_greeting%>\", \"<%partner_greeting%>\"]],\n\t[\"<%name%> heard a familiar sound and headed downstairs.\", [\"<%name%>\", \"\/s\/assets\/narration\/heardafamiliar.mp3\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -223,7 +223,7 @@
                  "name":"sees friends",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"In the playroom were two of <%name%>'s most bestest friends: <%friend1_name%> and <%friend2_name%>\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"In the playroom were two of <%name%>'s best friends: <%friend1_name%> and <%friend2_name%>\", [\"\/s\/assets\/narration\/intheplayroom.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/bestfriends.mp3\", \"<%friend1_name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<%friend2_name%>\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -245,7 +245,7 @@
                  "name":"kitchen greeting",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"As <%name%> entered the kitchen, they were greeting by their parents.\", []],\n\t[\"<i>(parents' greetings)<\/i>\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"As <%name%> entered the kitchen, they were greeted by their parents.\", [\"\/s\/assets\/narration\/as.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/enteredthekitchen.mp3\"]],\n\t[\"<i>(parents' greetings)<\/i>\", [\"<%parent_greeting%>\", \"<%partner_greeting%>\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -383,7 +383,7 @@
                  "name":"parents upset",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"As time passed, <%name%> grew and soon they didn't need walking to school. They were grown up.\", []],\n\t[\"<%name%>'s parents were upset of course\", []],\n\t[\"<i>crying<\/i>\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"As time passed, <%name%> grew and soon they didn't need walking to school. They were grown up.\", [\"\/s\/assets\/narration\/astimepassed.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/grewandsoon.mp3\"]],\n\t[\"<%name%>'s parents were upset of course\", [\"<%name%>\", \"\/s\/assets\/narration\/parentswereupset.mp3\"]],\n\t[\"<i>crying<\/i>\", [\"<%parent_cry%>\", \"<%partner_cry%>\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -405,7 +405,7 @@
                  "name":"school setup",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<%name%> moved on to school, where they excelled in most subjects.\", []],\n\t[\"Like everyone at the school, <%name%> hated the uniforms.\", []]\n]},\n    {\"type\": \"colour\", \"key\": \"uniform\", \"title\": \"School uniform colour\", \"instruction\": \"What colour was the school uniform?\"},\n    {\"type\":\"narrate\", \"data\":[\n\t[\"How uncool! And the tie...\", []]]},\n    {\"type\": \"image\", \"key\": \"tie\", \"title\": \"School uniform tie\", \"instruction\": \"Draw the tie\", \"width\": 9, \"height\": 16, \"guide\": \"\/s\/assets\/guides\/tie-guide.png\"},\n    {\"type\": \"insantiateLazyNPC\", \"tag\": \"school-friends\"}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<%name%> moved on to school, and they excelled in many subjects.\", [\"<%name%>\", \"\/s\/assets\/narration\/movedontoschool.mp3\"]],\n\t[\"Like everyone at the school, <%name%> hated the uniforms.\", [\"\/s\/assets\/narration\/likeeveryone.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/hatedtheuniforms.mp3\"]]\n]},\n    {\"type\": \"colour\", \"key\": \"uniform\", \"title\": \"School uniform colour\", \"instruction\": \"What colour was the school uniform?\"},\n    {\"type\":\"narrate\", \"data\":[\n\t[\"How uncool! And the tie...\", [\"\/s\/assets\/narration\/howuncool.mp3\"]]]},\n    {\"type\": \"image\", \"key\": \"tie\", \"title\": \"School uniform tie\", \"instruction\": \"Draw the tie\", \"width\": 9, \"height\": 16, \"guide\": \"\/s\/assets\/guides\/tie-guide.png\"},\n    {\"type\": \"insantiateLazyNPC\", \"tag\": \"school-friends\"}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -505,7 +505,7 @@
                  "name":"enter classroom",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"Like always, there was a message left on the board when <%name%> entered.\", []]]\n}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"Like always, there was a message left on the board when <%name%> entered.\", [\"\/s\/assets\/narration\/likealways.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/entered.mp3\"]]]\n}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -527,7 +527,7 @@
                  "name":"change board",
                  "properties":
                     {
-                     "script":"[\n{\"type\":\"narrate\", \"data\":[\n    [\"And like always, <%name%> left their own message for whoever would enter next.\", []]]\n},\n    {\"type\": \"image\", \"key\": \"blackboard\", \"title\": \"Blackboard message\", \"instruction\": \"Leave a message on the blackboard\", \"width\": 64, \"height\": 64, \"background\": \"#1e1e1e\"},\n    {\"type\": \"modifyTilesheet\", \"data\": [\n                        [\"\/s\/assets\/blackboard-empty.png\", 7, 21],\n\t[\"<#blackboard#>\", 7, 21]\n                    ]}\n]",
+                     "script":"[\n{\"type\":\"narrate\", \"data\":[\n    [\"And like always, <%name%> left their own message for whoever would enter next.\", [\"\/s\/assets\/narration\/andlikealways.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/lefttheirown.mp3\"]]]\n},\n    {\"type\": \"image\", \"key\": \"blackboard\", \"title\": \"Blackboard message\", \"instruction\": \"Leave a message on the blackboard\", \"width\": 64, \"height\": 64, \"background\": \"#1e1e1e\"},\n    {\"type\": \"modifyTilesheet\", \"data\": [\n                        [\"\/s\/assets\/blackboard-empty.png\", 7, 21],\n\t[\"<#blackboard#>\", 7, 21]\n                    ]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -839,7 +839,7 @@
                  "name":"enter dance",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"This is an important part, the school dance. This is where it all happens.\", []],\n\t[\"But that's not right. <%name%> hated that haircut. I'm sure they changed it right before the dance.\", []]\n]},\n    {\"type\": \"image\", \"key\": \"hair\", \"title\": \"Haircut\", \"instruction\": \"Finally <%name%> gets to choose their own hair style. Give them something cool.\", \"width\": 55, \"height\": 42, \"guide\": \"\/s\/assets\/guides\/hair-guide.png\"},\n    {\"type\": \"useOwnHair\"},\n{\"type\":\"narrate\", \"data\":[\n\t[\"That's more like it. <%name%> continued into the sports hall.\", []]\n]}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"This is an important part, the school dance. This is where it all happens.\", [\"\/s\/assets\/narration\/thisisan.mp3\"]],\n\t[\"But that's not right. <%name%> hated that haircut. I'm sure they changed it right before the dance.\", [\"\/s\/assets\/narration\/butthatsnot.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/hatedthathaircut.mp3\"]]\n]},\n    {\"type\": \"image\", \"key\": \"hair\", \"title\": \"Haircut\", \"instruction\": \"Finally <%name%> gets to choose their own hair style. Give them something cool.\", \"width\": 55, \"height\": 42, \"guide\": \"\/s\/assets\/guides\/hair-guide.png\"},\n    {\"type\": \"useOwnHair\"},\n{\"type\":\"narrate\", \"data\":[\n\t[\"That's more like it. <%name%> continued into the sports hall.\", [\"\/s\/assets\/narration\/thatsmorelikeit.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/continuedinto.mp3\"]]\n]}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -861,7 +861,7 @@
                  "name":"meet partner",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"And it was there, between the basketball hoops, that <%name%> met their soulmate.\", []],\n\t[\"As the music stopped, and the track changed to something unforgettable, their eyes met.\", []],\n\t[\"<i>Unforgettable music<\/i>\", []],\n\t[\"And then, they touched.\", []]\n]},\n    {\"type\": \"findPartner\"}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"And it was there, between the basketball hoops, that <%name%> met their soulmate.\", [\"\/s\/assets\/narration\/anditwasthere.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/mettheirsoulmate.mp3\"]],\n\t[\"As the music stopped, and the track changed to something unforgettable, their eyes met.\", [\"\/s\/assets\/narration\/asthemusicstopped.mp3\"]],\n\t[\"<i>Unforgettable music<\/i>\", [\"<%music%>\"]],\n\t[\"And then, they touched.\", [\"\/s\/assets\/narration\/andthen.mp3\"]]\n]},\n    {\"type\": \"findPartner\"}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1095,7 +1095,7 @@
                  "name":"kiss",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"The first kiss.\", []],\n\t[\"This was a moment <%name%> had thought about for a long time.\", []],\n\t[\"They had prepared, and this was going to be perfect. It wouldn't be too long or short, too fast or slow, not too loud, but not too quiet.\", []]\n]},\n    {\"type\":\"audio\", \"key\": \"kiss\", \"title\": \"Kiss\", \"instruction\": \"Make a kissing sound\"},\n    {\"type\":\"prepareKiss\"}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"The first kiss.\", [\"\/s\/assets\/narration\/thefirstkiss.mp3\"]],\n\t[\"This was a moment <%name%> had thought about for a long time.\", [\"\/s\/assets\/narration\/thiswasamoment.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/hadthoughtabout.mp3\"]],\n\t[\"They had prepared, and this was going to be perfect. It wouldn't be too long or short, too fast or slow, not too loud, but not too quiet.\", [\"\/s\/assets\/narration\/theyhadprepared.mp3\"]]\n]},\n    {\"type\":\"audio\", \"key\": \"kiss\", \"title\": \"Kiss\", \"instruction\": \"Make a kissing sound\"},\n    {\"type\":\"prepareKiss\"}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1117,7 +1117,7 @@
                  "name":"relationship1",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"They spent a lot of time together over the following months.\", []],\n\t[\"Getting to know each other's likes and dislikes\", []],\n\t[\"Holding hands, hugging, and eventually...\", []]\n]},\n    {\"type\": \"changeOutOfSchoolClothes\"}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"They spent a lot of time together over the following months.\", [\"\/s\/assets\/narration\/theyspentalot.mp3\"]],\n\t[\"Getting to know each other's likes and dislikes\", [\"\/s\/assets\/narration\/gettingtoknow.mp3\"]],\n\t[\"Holding hands, hugging, and eventually...\", [\"\/s\/assets\/narration\/holdinghands.mp3\"]]\n]},\n    {\"type\": \"changeOutOfSchoolClothes\"}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1227,7 +1227,7 @@
                  "name":"Grow Up",
                  "properties":
                     {
-                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<%name%> and <#partner_name#> grew together. Never spending much time apart.\", []],\n\t[\"They shared many more kisses.\", []]\n]},\n    {\"type\":\"growUp\"}\n]",
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<%name%> and <#partner_name#> grew together. Never spending much time apart.\", [\"<%name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<#partner_name#>\", \"\/s\/assets\/narration\/grewtogether.mp3\"]],\n\t[\"They shared many more kisses.\", [\"\/s\/assets\/narration\/theysharedmany.mp3\"]]\n]},\n    {\"type\":\"growUp\"}\n]",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1501,7 +1501,7 @@
                  "name":"name the baby",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"And eventually, <%name%> and <#partner_name#> started a family.\", []]\n            ]\n    },\n    {\"type\":\"text\", \"key\": \"name\", \"title\": \"Baby Name\", \"instruction\": \"What is the baby's name?\"},\n    {\"type\":\"audio\", \"key\": \"name\", \"title\": \"<#name#>\", \"instruction\": \"How do you pronounce <#name#>?\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"Little <#name#> was the joy of their lives.\", []],\n        [\"They provided clothing.\", []]\n    ]},\n    {\"type\":\"colour\", \"key\": \"clothes_color\", \"title\": \"Clothing Colour\", \"instruction\": \"What colour is <#name#>'s clothes?\"},\n    {\"type\": \"refreshChild\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"housing.\", []]\n    ]},\n    {\"type\":\"image\", \"key\": \"wallpaper\", \"title\": \"Wallpaper\", \"instruction\": \"How should <#name#>'s wallaper look?\", \"width\": 64, \"height\": 64, \"background\": \"#FFFFFF\", \"tiled\": true},\n    {\"type\": \"modifyTilesheet\", \"data\": [\n                        [\"\/s\/assets\/wallpaper-empty.png\", 0, 3],\n\t[\"<#wallpaper#>\", 0, 3]\n                    ]},\n    {\"type\":\"narrate\", \"data\":[\n        [\"And of course love.\", []]\n    ]},\n    {\"type\":\"audio\", \"key\": \"song\", \"title\": \"Song\", \"instruction\": \"Sing or hum a 10 second song for <#name#>.\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"Life couldn't be happier for <%name%>, <#partner_name#>, and <#name#>\", []]\n    ]}\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"And eventually, <%name%> and <#partner_name#> started a family.\", [\"\/s\/assets\/narration\/andeventually.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<#partner_name#>\", \"\/s\/assets\/narration\/startedafamily.mp3\"]]\n            ]\n    },\n    {\"type\":\"text\", \"key\": \"name\", \"title\": \"Baby Name\", \"instruction\": \"What is the baby's name?\"},\n    {\"type\":\"audio\", \"key\": \"name\", \"title\": \"<#name#>\", \"instruction\": \"How do you pronounce <#name#>?\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"Little <#name#> was the joy of their lives.\", [\"\/s\/assets\/narration\/little.mp3\", \"<#name#>\", \"\/s\/assets\/narration\/wasthejoy.mp3\"]],\n        [\"They provided clothing.\", [\"\/s\/assets\/narration\/theyprovided.mp3\"]]\n    ]},\n    {\"type\":\"colour\", \"key\": \"clothes_color\", \"title\": \"Clothing Colour\", \"instruction\": \"What colour is <#name#>'s clothes?\"},\n    {\"type\": \"refreshChild\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"housing.\", [\"\/s\/assets\/narration\/housing.mp3\"]]\n    ]},\n    {\"type\":\"image\", \"key\": \"wallpaper\", \"title\": \"Wallpaper\", \"instruction\": \"How should <#name#>'s wallaper look?\", \"width\": 64, \"height\": 64, \"background\": \"#FFFFFF\", \"tiled\": true},\n    {\"type\": \"modifyTilesheet\", \"data\": [\n                        [\"\/s\/assets\/wallpaper-empty.png\", 0, 3],\n\t[\"<#wallpaper#>\", 0, 3]\n                    ]},\n    {\"type\":\"narrate\", \"data\":[\n        [\"And of course love.\", [\"\/s\/assets\/narration\/andofcourselove.mp3\"]]\n    ]},\n    {\"type\":\"audio\", \"key\": \"song\", \"title\": \"Song\", \"instruction\": \"Sing or hum a 10 second song for <#name#>.\"},\n    {\"type\":\"narrate\", \"data\":[\n        [\"Life couldn't be happier for <%name%>, <#partner_name#>, and <#name#>\", [\"\/s\/assets\/narration\/lifecouldntbe.mp3\", \"<%name%>\", \"<#partner_name#>\", \"<#name#>\"]]\n    ]}\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1523,7 +1523,7 @@
                  "name":"walk to school",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"<%name%> and <#partner_name#> would both insist on walking <#name#> to school.\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"<%name%> and <#partner_name#> would both insist on walking <#name#> to school.\", [\"<%name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<#partner_name#>\", \"\/s\/assets\/narration\/wouldbothinsist.mp3\", \"<#name#>\", \"\/s\/assets\/narration\/toschool.mp3\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1589,7 +1589,7 @@
                  "name":"continue",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"content that <#name#> was settled, <%name%> and <PARTNER_NAME> continued onwards together\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"content that <#name#> was settled, <%name%> and <#partner_name#> continued onwards together\", [\"\/s\/assets\/narration\/contentthat.mp3\", \"<#name#>\", \"\/s\/assets\/narration\/wassettled.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<#partner_name#>\", \"\/s\/assets\/narration\/continuedonwards.mp3\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1611,7 +1611,7 @@
                  "name":"grow old",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"<%name%> and <#partner_name#> grow old together, and are very proud of <#name#>'s progress.\", []]\n            ]\n    },\n    { \"type\": \"growOld\"}\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"<%name%> and <#partner_name#> grew old together, very proud of <#name#>'s progress.\", [\"<%name%>\", \"\/s\/assets\/narration\/and.mp3\", \"<#partner_name#>\", \"\/s\/assets\/narration\/grewold.mp3\", \"<#name#>\", \"\/s\/assets\/narration\/progress.mp3\"]]\n            ]\n    },\n    { \"type\": \"growOld\"}\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1633,7 +1633,7 @@
                  "name":"friends drying",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"They saw their friends passing.\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"They saw their friends passing.\", [\"\/s\/assets\/narration\/theysawtheir.mp3\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1655,7 +1655,7 @@
                  "name":"friend1",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"First <%friend1_name%>.\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"First <%friend1_name%>.\", [\"\/s\/assets\/narration\/first.mp3\", \"<%friend1_name%>\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1677,7 +1677,7 @@
                  "name":"friend1",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"Then <%friend2_name%>.\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"Then <%friend2_name%>.\", [\"\/s\/assets\/narration\/then.mp3\", \"<%friend2_name%>\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1699,7 +1699,7 @@
                  "name":"partner dies",
                  "properties":
                     {
-                     "script":"[\n{\n    \"type\": \"partnerDie\"\n},\n    {\n        \"type\":\"narrate\", \"data\":[\n                [\"Eventually, It was <%partner_name%>'s time.\", []],\n                [\"<%name%> was heartbroken..\", []],\n                [\"<i>Cry<\/i>\", []],\n                [\"They carried on alone\", []]\n            ]\n    }\n]\n",
+                     "script":"[\n{\n    \"type\": \"partnerDie\"\n},\n    {\n        \"type\":\"narrate\", \"data\":[\n                [\"Eventually, It was <%partner_name%>'s time.\", [\"\/s\/assets\/narration\/eventually.mp3\", \"<%partner_name%>\", \"\/s\/assets\/narration\/time.mp3\"]],\n                [\"<%name%> was heartbroken..\", [\"<%name%>\", \"\/s\/assets\/narration\/washeartbroken.mp3\"]],\n                [\"<i>Cry<\/i>\", [\"<#cry#>\"]],\n                [\"They carried on alone\", [\"\/s\/assets\/narration\/theycarriedon.mp3\"]]\n            ]\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1721,7 +1721,7 @@
                  "name":"end",
                  "properties":
                     {
-                     "script":"[\n{\n    \"type\": \"die\"\n},\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\"But this heartbreak didn't last long\", []],\n            [\"As <%name%> passed away shortly afterwards.\", []]\n         ]\n    },\n{\"type\": \"image\", \"key\": \"gravestone\", \"title\": \"Gravestone\", \"instruction\": \"Draw <%name%>'s gravestone.\", \"width\": 64, \"height\": 64, \"guide\": \"\/s\/assets\/guides\/gravestone-guide.png\"},\n{\n    \"type\": \"endGame\"\n}\n]\n",
+                     "script":"[\n{\n    \"type\": \"die\"\n},\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\"But this heartbreak didn't last long\", [\"\/s\/assets\/narration\/butthis.mp3\"]],\n            [\"As <%name%> passed away themselves shortly afterwards.\", [\"\/s\/assets\/narration\/as.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/passedaway.mp3\"]]\n         ]\n    },\n{\"type\": \"image\", \"key\": \"gravestone\", \"title\": \"Gravestone\", \"instruction\": \"Draw <%name%>'s gravestone.\", \"width\": 64, \"height\": 64, \"guide\": \"\/s\/assets\/guides\/gravestone-guide.png\"},\n{\n    \"type\": \"endGame\"\n}\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
@@ -1743,7 +1743,7 @@
                  "name":"run away",
                  "properties":
                     {
-                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"But one day, <#name#> would get too old, and would want to walk by themselves.\", []]\n            ]\n    },\n    {\n        \"type\": \"childRunAway\"\n    }\n]\n",
+                     "script":"[\n    {\n        \"type\":\"narrate\", \"data\":[\n            [\n                \"But one day, <#name#> would get too old, and would want to walk by themselves.\", [\"\/s\/assets\/narration\/butoneday.mp3\", \"<#name#>\", \"\/s\/assets\/narration\/wouldgettooold.mp3\"]]\n            ]\n    },\n    {\n        \"type\": \"childRunAway\"\n    }\n]\n",
                      "type":"script"
                     },
                  "propertytypes":
