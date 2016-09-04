@@ -196,6 +196,7 @@ def setimage(request, uploadid):
     img_temp.flush()
 
     im.save()
+    im.image.save(img_temp)
     return JsonResponse({})
 
 @csrf_exempt
@@ -207,8 +208,8 @@ def setsound(request, uploadid):
     img_temp = NamedTemporaryFile(delete=True)
     img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())
     img_temp.flush()
-
     im.save()
+    im.sound.save(img_temp)
     return JsonResponse({})
 
 

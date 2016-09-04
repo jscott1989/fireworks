@@ -9,13 +9,10 @@
 
 module.exports = {
     create() {
-        // menu.open(() => {
-        //     microphone.open(() => {
-        //         game.state.start("play");
-        //     });
-        // });
-        audio.init(() => {
-            game.state.start("play");
+        menu.open(() => {
+            microphone.open(() => {
+                game.state.start("play");
+            });
         });
     }
 }
