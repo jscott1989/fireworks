@@ -13,9 +13,15 @@ var callback;
 var audioPlayer;
 var audioFiles;
 
+const closeOnSpace = (e) => {
+    if (e.code == "Space") {
+        close();
+    }
+}
+
 const close = () => {
     document.removeEventListener('click', close);
-    document.removeEventListener('keydown', close);
+    document.removeEventListener('keydown', closeOnSpace);
 
     container.style.display = "none";
     pause.resume('narrate');
@@ -46,11 +52,7 @@ module.exports = {
 
         setTimeout(() => {
             document.addEventListener('click', close);
-            document.addEventListener('keydown', (e) => {
-                if (e.code == "Space") {
-                    close();
-                }
-            });
+            document.addEventListener('keydown', closeOnSpace);
         }, 500);
 
         textContainer.innerHTML = ui.parseText(textStr);
