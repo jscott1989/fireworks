@@ -38,6 +38,7 @@ var findingPartner = false;
 var partner;
 var child;
 var isKissing = false;
+var fallingSounds = false;
 
 
 var tilesheetModifications = [
@@ -881,6 +882,10 @@ const interactionTypes = {
         canMove = true;
         child.destroy();
         child = null;
+
+        audio.narrate([
+            ["content that <#name#> was settled, <%name%> and <#partner_name#> continued onwards together", ["/s/assets/narration/contentthat.mp3", "<#name#>", "/s/assets/narration/wassettled.mp3", "<%name%>", "/s/assets/narration/and.mp3", "<#partner_name#>", "/s/assets/narration/continuedonwards.mp3"]]
+        ]);
     },
 
     changeChildSprite(self, p) {
@@ -979,7 +984,7 @@ const interactionTypes = {
                     interactionTypes["changeSprite"](self, {"new-sprite": "school-student"});
                     parseScript(scripts);
                 } else if (script.type == "refreshChild") {
-                    createCharacter("baby", child.x, child.y, data.text["skin_color"],
+                    createCharacter("baby", child.x, child.y, text.get("partner_skin_color"),
                         text.get("partner_eye_color"),
                         text.get("clothes_color"),
                         text.get("child_eye_number"),
@@ -1117,6 +1122,10 @@ const interactionTypes = {
                 } else if (script.type == "childRunAway") {
                     canMove = false;
                     child.npc = AITypes["run-away"](child);
+                } else if (script.type == "startFallSounds") {
+                    fallingSounds = true;
+                } else if (script.type == "stopFallSounds") {
+                    fallingSounds = false;
                 }
             }
         }
@@ -1286,6 +1295,11 @@ module.exports = {
 
         var lastYVelocity = this.player.body.velocity.y;
 
+
+        if (fallingSounds) {
+            var lastPartnerVelocity = partner.body.velocity.y;
+        }
+
         // game.debug.body(this.player);
         // if (partner != null) {
         //     game.debug.body(partner);
@@ -1317,7 +1331,7 @@ module.exports = {
 
         if (velocityChange > 200) {
             // Big bump
-                if (currentSprite == "baby" || currentSprite == "walking-baby") {
+                if (currentSprite == "baby" || currentSprite == "walking-baby" || (velocityChange > 270 && fallingSounds)) {
                     canMove = false;
                     game.camera.flash(0x000000, 500);
                     audio.playOriginal("bump", null, null, () => {
@@ -1335,7 +1349,7 @@ module.exports = {
                         }
                     });
                 }
-        } else if ((velocityChange > 180 && currentSprite == "baby") || velocityChange > 230 && currentSprite == "walking-baby") {
+        } else if ((velocityChange > 180 && currentSprite == "baby") || velocityChange > 230 && currentSprite == "walking-baby" || (velocityChange > 190 && fallingSounds)) {
             // Small bump
             if (!(_.has(audio.all(), "bump"))) {
                 audio.narrate([
@@ -1347,6 +1361,17 @@ module.exports = {
             } else {
                 audio.playOriginal("bump");
             }
+        }
+
+        if (fallingSounds) {
+            // We also care about the velocity of the partner
+            var partnerVelocityChange = lastPartnerVelocity - partner.body.velocity.y;
+            if (partnerVelocityChange > 200) {
+                audio.playOriginal("partner_cry");
+            } else if (partnerVelocityChange > 190) {
+                audio.playOriginal("partner_bump");
+            }
+
         }
 
         if (canMove && this.keyboard.isDown(Phaser.Keyboard.A)) {
