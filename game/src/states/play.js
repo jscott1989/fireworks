@@ -43,10 +43,7 @@ var fallingSounds = false;
 
 var tilesheetModifications = [
     ["<%wallpaper%>", 0, 3],
-    ["<%blackboard%>", 7, 21],
-    ["<%friends_gravestone1%>", 9, 2],
-    ["<%friends_gravestone2%>", 9, 3],
-    ["<%partner_gravestone%>", 9, 4]
+    ["<%blackboard%>", 7, 21]
 ];
 
 

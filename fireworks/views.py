@@ -22,88 +22,138 @@ def index(request):
     lowest_children = [l for l in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children")]
 
     def default(category, key, value):
-        if key not in data[category]:
+        if key not in data[category] or data[category][key] is None:
             data[category][key] = value
 
-    # The lowest will be come our parent
+    def get_text(person, key, default=None):
+        try:
+            return person.texts.get(key=key).value
+        except models.Text.DoesNotExist:
+            return default
+
+    def get_image(person, key, default=None):
+        try:
+            return person.images.get(key=key).image.url
+        except models.Image.DoesNotExist:
+            return default
+
+    def get_sound(person, key, default=None):
+        try:
+            return person.sounds.get(key=key).sound.url
+        except models.Sound.DoesNotExist:
+            return default
+
+    # The lowest will become our parent
+
+    used_pks = []
+    parent = None
     
     if len(lowest_children) > 0:
         parent = lowest_children.pop(0)
+        used_pks.append(parent.pk)
+        partner_pk = get_text(parent, "partner_pk")
+        if partner_pk:
+            used_pks.append(int(partner_pk))
         data["parent"] = parent.pk
 
-        default("text", "parent_skin_color", parent.texts.get(key="my_skin_color").value)
-        default("text", "parent_eye_color", parent.texts.get(key="my_eye_color").value)
-        default("text", "parent_clothes_color", parent.texts.get(key="my_clothes_color").value)
-        default("text", "parent_eye_number", parent.texts.get(key="my_eye_number").value)
-        default("text", "parent_ear_number", parent.texts.get(key="my_ear_number").value)
-        default("text", "parent_nose_number", parent.texts.get(key="my_nose_number").value)
-        default("text", "parent_mouth_number", parent.texts.get(key="my_mouth_number").value)
-        default("text", "parent_accessories_number", parent.texts.get(key="my_accessories_number").value)
-        default("image", "parent_hair", parent.images.get(key="hair").image.url)
+        default("text", "parent_skin_color", get_text(parent, "my_skin_color"))
+        default("text", "parent_eye_color", get_text(parent, "my_eye_color"))
+        default("text", "parent_clothes_color", get_text(parent, "my_clothes_color"))
+        default("text", "parent_eye_number", get_text(parent, "my_eye_number"))
+        default("text", "parent_ear_number", get_text(parent, "my_ear_number"))
+        default("text", "parent_nose_number", get_text(parent, "my_nose_number"))
+        default("text", "parent_mouth_number", get_text(parent, "my_mouth_number"))
+        default("text", "parent_accessories_number", get_text(parent, "my_accessories_number"))
+        default("image", "parent_hair", get_image(parent, "hair"))
 
-        default("text", "partner_skin_color", parent.texts.get(key="partner_skin_color").value)
-        default("text", "partner_eye_color", parent.texts.get(key="partner_eye_color").value)
-        default("text", "partner_clothes_color", parent.texts.get(key="partner_clothes_color").value)
-        default("text", "partner_eye_number", parent.texts.get(key="partner_eye_number").value)
-        default("text", "partner_ear_number", parent.texts.get(key="partner_ear_number").value)
-        default("text", "partner_nose_number", parent.texts.get(key="partner_nose_number").value)
-        default("text", "partner_mouth_number", parent.texts.get(key="partner_mouth_number").value)
-        default("text", "partner_accessories_number", parent.texts.get(key="partner_accessories_number").value)
-        default("image", "partner_hair", parent.images.get(key="partner_hair").image.url)
+        default("text", "partner_skin_color", get_text(parent, "partner_skin_color"))
+        default("text", "partner_eye_color", get_text(parent, "partner_eye_color"))
+        default("text", "partner_clothes_color", get_text(parent, "partner_clothes_color"))
+        default("text", "partner_eye_number", get_text(parent, "partner_eye_number"))
+        default("text", "partner_ear_number", get_text(parent, "partner_ear_number"))
+        default("text", "partner_nose_number", get_text(parent, "partner_nose_number"))
+        default("text", "partner_mouth_number", get_text(parent, "partner_mouth_number"))
+        default("text", "partner_accessories_number", get_text(parent, "partner_accessories_number"))
+        default("image", "partner_hair", get_image(parent, "partner_hair"))
 
-        default("text", "skin_color", parent.texts.get(key="partner_skin_color").value)
-        default("text", "eye_color", parent.texts.get(key="partner_eye_color").value)
-        default("text", "clothes_color", parent.texts.get(key="clothes_color").value)
-        default("text", "eye_number", parent.texts.get(key="child_eye_number").value)
-        default("text", "ear_number", parent.texts.get(key="child_ear_number").value)
-        default("text", "nose_number", parent.texts.get(key="child_nose_number").value)
-        default("text", "mouth_number", parent.texts.get(key="child_mouth_number").value)
-        default("text", "accessories_number", parent.texts.get(key="child_accessories_number").value)
+        default("text", "skin_color", get_text(parent, "partner_skin_color"))
+        default("text", "eye_color", get_text(parent, "partner_eye_color"))
+        default("text", "clothes_color", get_text(parent, "clothes_color"))
+        default("text", "eye_number", get_text(parent, "child_eye_number"))
+        default("text", "ear_number", get_text(parent, "child_ear_number"))
+        default("text", "nose_number", get_text(parent, "child_nose_number"))
+        default("text", "mouth_number", get_text(parent, "child_mouth_number"))
+        default("text", "accessories_number", get_text(parent, "child_accessories_number"))
 
-        default("image", "wallpaper", parent.images.get(key="wallpaper").image.url)
-        default("text", "parent_name", parent.texts.get(key="my_name").value)
-        default("text", "partner_name", parent.texts.get(key="partner_name").value)
-        default("text", "name", parent.texts.get(key="name").value)
+        default("image", "wallpaper", get_image(parent, "wallpaper"))
+        default("text", "parent_name", get_text(parent, "my_name"))
+        default("text", "partner_name", get_text(parent, "partner_name"))
+        default("text", "name", get_text(parent, "name"))
 
-        default("sound", "parent_name", parent.sounds.get(key="my_name").sound.url)
-        default("sound", "parent_greeting", parent.sounds.get(key="greeting").sound.url)
-        default("sound", "parent_cry", parent.sounds.get(key="cry").sound.url)
-        default("sound", "partner_name", parent.sounds.get(key="partner_name").sound.url)
-        default("sound", "partner_greeting", parent.sounds.get(key="partner_greeting").sound.url)
-        default("sound", "partner_cry", parent.sounds.get(key="partner_cry").sound.url)
-        default("sound", "name", parent.sounds.get(key="name").sound.url)
+        default("sound", "parent_name", get_sound(parent, "my_name"))
+        default("sound", "parent_greeting", get_sound(parent, "greeting"))
+        default("sound", "parent_cry", get_sound(parent, "cry"))
+        default("sound", "partner_name", get_sound(parent, "partner_name"))
+        default("sound", "partner_greeting", get_sound(parent, "partner_greeting"))
+        default("sound", "partner_cry", get_sound(parent, "partner_cry"))
+        default("sound", "name", get_sound(parent, "name"))
 
-        default("image", "blackboard", parent.images.get(key="blackboard").image.url)
-        default("sound", "music", parent.sounds.get(key="song").sound.url)
+        default("image", "blackboard", get_image(parent, "blackboard"))
+        default("sound", "music", get_sound(parent, "song"))
 
-    roles_to_fill = ["friend3", "friend4", "friend1", "friend2", "friend5", "friend6", "friend7", "friend8", "teacher"]
+    roles_to_fill = ["friend3", "friend4", "friend5", "friend6", "friend7", "friend8", "friend1", "friend2", "teacher"]
 
     while (len(roles_to_fill) > 0 and len(lowest_children) > 0):
-        next_role = roles_to_fill.pop(0)
         person = lowest_children.pop(0)
-        default("text", "%s_pk" % (next_role), person.pk)
-        default("text", "%s_name" % (next_role), person.texts.get(key="my_name").value)
-        default("sound", "%s_name" % (next_role), person.sounds.get(key="my_name").sound.url)
-        default("text", "%s_skin_color" % (next_role), person.texts.get(key="my_skin_color").value)
-        default("text", "%s_eye_color" % (next_role), person.texts.get(key="my_eye_color").value)
-        default("text", "%s_clothes_color" % (next_role), person.texts.get(key="my_clothes_color").value)
-        default("text", "%s_eye_number" % (next_role), person.texts.get(key="my_eye_number").value)
-        default("text", "%s_ear_number" % (next_role), person.texts.get(key="my_ear_number").value)
-        default("text", "%s_nose_number" % (next_role), person.texts.get(key="my_nose_number").value)
-        default("text", "%s_mouth_number" % (next_role), person.texts.get(key="my_mouth_number").value)
-        default("text", "%s_accessories_number" % (next_role), person.texts.get(key="my_accessories_number").value)
-        default("image", "%s_hair" % (next_role), person.images.get(key="hair").image.url)
-        default("sound", "%s_kiss" % (next_role), person.sounds.get(key="kiss").sound.url)
-        default("sound", "%s_cry" % (next_role), person.sounds.get(key="cry").sound.url)
-        default("sound", "%s_bump" % (next_role), person.sounds.get(key="bump").sound.url)
-        default("sound", "%s_greeting" % (next_role), person.sounds.get(key="greeting").sound.url)
-        if (person.images.filter(key="favouritetoy").count() > 0):
-            default("image", "%s_favouritetoy" % (next_role), person.images.get(key="favouritetoy").image.url)
+        if person.pk not in used_pks:
+            next_role = roles_to_fill.pop(0)
+            default("text", "%s_pk" % (next_role), person.pk)
+
+            default("text", "%s_name" % (next_role), get_text(person, "my_name"))
+            if data["text"]["%s_name" % (next_role)] is not None:
+                default("sound", "%s_name" % (next_role), get_sound(person, "my_name"))
+
+            if data["sound"]["%s_name" % (next_role)] is None:
+                data["text"]["%s_name" % (next_role)] = None
+
+            default("text", "%s_skin_color" % (next_role), get_text(person, "my_skin_color"))
+            default("text", "%s_eye_color" % (next_role), get_text(person, "my_eye_color"))
+            default("text", "%s_clothes_color" % (next_role), get_text(person, "my_clothes_color"))
+            default("text", "%s_eye_number" % (next_role), get_text(person, "my_eye_number"))
+            default("text", "%s_ear_number" % (next_role), get_text(person, "my_ear_number"))
+            default("text", "%s_nose_number" % (next_role), get_text(person, "my_nose_number"))
+            default("text", "%s_mouth_number" % (next_role), get_text(person, "my_mouth_number"))
+            default("text", "%s_accessories_number" % (next_role), get_text(person, "my_accessories_number"))
+
+            default("image", "%s_hair" % (next_role), get_image(person, "hair"))
+            default("sound", "%s_kiss" % (next_role), get_sound(person, "kiss"))
+            default("sound", "%s_cry" % (next_role), get_sound(person, "cry"))
+            default("sound", "%s_bump" % (next_role), get_sound(person, "bump"))
+            default("sound", "%s_greeting" % (next_role), get_sound(person, "greeting"))
+            default("image", "%s_favouritetoy" % (next_role), get_image(person, "favouritetoy"))
 
 
 
     # Next, try to use people who haven't completed but have provided enough information
-    # TODO
+    if (len(roles_to_fill) > 0):
+        # We have no more completed people to use, find uncompleted people with the greatest contribution and use them
+        incomplete = [l for l in models.Character.objects.filter(complete=False).exclude(parent=parent)]
+
+        incomplete = sorted(incomplete, key=lambda i : i.images.count() + i.sounds.count(), reverse=True)
+
+        person = incomplete.pop(0)
+
+        while len(roles_to_fill) > 0 and person is not None:
+                # Fill it as best we can
+                # We ignore all the my_ stuff as if its not complete we don't want all our NPCs looking the same
+                next_role = roles_to_fill.pop(0)
+                default("text", "%s_pk" % (next_role), person.pk)
+                default("image", "%s_hair" % (next_role), get_image(person, "hair"))
+                default("sound", "%s_kiss" % (next_role), get_sound(person, "kiss"))
+                default("sound", "%s_cry" % (next_role), get_sound(person, "cry"))
+                default("sound", "%s_bump" % (next_role), get_sound(person, "bump"))
+                default("sound", "%s_greeting" % (next_role), get_sound(person, "greeting"))
+                default("image", "%s_favouritetoy" % (next_role), get_image(person, "favouritetoy"))
 
     # Toys
     toys = list(models.Image.objects.filter(key="favouritetoy"))
@@ -143,7 +193,6 @@ def index(request):
              "/s/assets/demo/hair/shorthair1.png", "/s/assets/demo/hair/shorthair2.png", "/s/assets/demo/hair/shorthair3.png",
              "/s/assets/demo/hair/spikyhair1.png", "/s/assets/demo/hair/spikyhair2.png"]
     BLACKBOARDS = ["/s/assets/demo/blackboard/scribble1.png", "/s/assets/demo/blackboard/scribble2.png"]
-    GRAVESTONES = ["/s/assets/demo/gravestones/gravestone1.png", "/s/assets/demo/gravestones/gravestone2.png", "/s/assets/demo/gravestones/gravestone3.png", "/s/assets/demo/gravestones/gravestone4.png"]
 
     # Baby
     default("text", "skin_color", "#8d5524")
@@ -176,8 +225,6 @@ def index(request):
     default("text", "partner_mouth_number", 1)
     default("text", "partner_accessories_number", 1)
     default("image", "partner_hair", "/s/assets/demo/hair/boy2.png")
-
-    # Done to here
 
     # Friends
     friend_names = ["Chris", "Charlie", "Jamie", "Skyler", "Justice", "Dakota", "Lennon", "Rowan", "Hunter", "Harper", "Dylan", "Jordyn", "Blake"]
@@ -235,11 +282,6 @@ def index(request):
 
     default("image", "blackboard", random.choice(BLACKBOARDS))
     default("sound", "music", "/s/assets/narration/jonny_music.mp3")
-
-    # Graveyard
-    default("image", "friends_gravestone1", random.choice(GRAVESTONES))
-    default("image", "friends_gravestone2", random.choice(GRAVESTONES))
-    default("image", "partner_gravestone", random.choice(GRAVESTONES))
 
     return render(request, "index.html", {"data": json.dumps(data)})
 
