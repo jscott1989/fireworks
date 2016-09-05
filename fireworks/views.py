@@ -26,7 +26,7 @@ def index(request):
             data[category][key] = value
 
     def get_text(person, key, default=None):
-        k = person.texts.get(key=key)
+        k = person.texts.filter(key=key).first()
         if not k:
             return default
         return k.value
