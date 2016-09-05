@@ -97,6 +97,21 @@ def index(request):
         default("sound", "%s_cry" % (next_role), person.sounds.get(key="cry").sound.url)
         default("sound", "%s_bump" % (next_role), person.sounds.get(key="bump").sound.url)
         default("sound", "%s_greeting" % (next_role), person.sounds.get(key="greeting").sound.url)
+        if (person.images.filter(key="favouritetoy").count() > 0):
+            default("image", "%s_favouritetoy" % (next_role), person.images.get(key="favouritetoy").image.url)
+
+
+
+    # Next, try to use people who haven't completed but have provided enough information
+    # TODO
+
+    # Toys
+    toys = list(models.Image.objects.filter(key="favouritetoy"))
+    random.shuffle(toys)
+    if len(toys) > 0:
+        default("image", "friend1_favouritetoy", toys[0].image.url)
+    if len(toys) > 1:
+        default("image", "friend2_favouritetoy", toys[1].image.url)
 
 
     #     lowest_children_count = lowest_children.children.count()
@@ -213,8 +228,8 @@ def index(request):
 
     # Children's room
 
-    default("image", "friends_toy1", "/s/assets/demo/toys/toy_1.png")
-    default("image", "friends_toy2", "/s/assets/demo/toys/toy_2.png")
+    default("image", "friend1_favouritetoy", "/s/assets/demo/toys/toy_1.png")
+    default("image", "friend2_favouritetoy", "/s/assets/demo/toys/toy_2.png")
 
     # School
 

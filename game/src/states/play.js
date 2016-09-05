@@ -847,7 +847,7 @@ const interactionTypes = {
         i.frame = 1;
 
         graphics.createSprite([
-            ['<%friends_toy1%>', [[0, 0]]]],
+            ['<%friend1_favouritetoy%>', [[0, 0]]]],
             [],[],
             32, 32, 1, (id) => {
                 itemsGroup.create(i.x + 20, i.y + 96, id);
@@ -855,7 +855,7 @@ const interactionTypes = {
         );
 
         graphics.createSprite([
-            ['<%friends_toy2%>', [[0, 0]]]],
+            ['<%friend2_favouritetoy%>', [[0, 0]]]],
             [],[],
             32, 32, 1, (id) => {
                 itemsGroup.create(i.x + 80, i.y + 96, id);
