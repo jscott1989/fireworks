@@ -1087,7 +1087,7 @@ const interactionTypes = {
                     text.set("child_accessories_number", _.random(0, 4));
 
 
-                    createCharacter("baby", partner.position.x - 64, partner.position.y, data.text["skin_color"],
+                    createCharacter("baby", partner.position.x - 64, partner.position.y, text.get("partner_skin_color"),
                         text.get("partner_eye_color"),
                         data.text["clothes_color"],
                         text.get("child_eye_number"),

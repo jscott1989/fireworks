@@ -53,7 +53,7 @@ def index(request):
         default("text", "partner_accessories_number", parent.texts.get(key="partner_accessories_number").value)
         default("image", "partner_hair", parent.images.get(key="partner_hair").image.url)
 
-        default("text", "skin_color", parent.texts.get(key="my_skin_color").value)
+        default("text", "skin_color", parent.texts.get(key="partner_skin_color").value)
         default("text", "eye_color", parent.texts.get(key="partner_eye_color").value)
         default("text", "clothes_color", parent.texts.get(key="clothes_color").value)
         default("text", "eye_number", parent.texts.get(key="child_eye_number").value)
