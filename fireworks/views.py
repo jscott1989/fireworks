@@ -265,8 +265,12 @@ def setimage(request, uploadid):
 
     im = models.Image(character=c, key=request.POST['key'])
 
+    url = request.POST['value']
+    if not url.startswith("http"):
+        url = ROOT_URL + url
+
     img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())
+    img_temp.write(urlopen(url).read())
     img_temp.flush()
 
     im.save()
@@ -279,9 +283,14 @@ def setsound(request, uploadid):
 
     im = models.Sound(character=c, key=request.POST['key'])
 
+    url = request.POST['value']
+    if not url.startswith("http"):
+        url = ROOT_URL + url
+
     img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urlopen(ROOT_URL + request.POST['value']).read())
+    img_temp.write(urlopen(url).read())
     img_temp.flush()
+
     im.save()
     im.sound.save("tmp.webm", img_temp)
     return JsonResponse({})
