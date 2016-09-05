@@ -4,7 +4,7 @@
  import _ from "lodash";
  import upload from '../upload';
  import pause from '../pause';
- require("floodfill");
+ // require("floodfill");
  import ui from './ui';
  import dataURLtoBlob from '../lib/blob';
 
@@ -57,51 +57,51 @@ const tools = {
         edited = true;
     },
 
-    fill(x, y) {
-        if (!edited) {
-            // Just fill them all
-            canvasContext.fillStyle = selectedColour;
-            displayCanvasContext.fillStyle = selectedColour;
-            previewCanvasContext.fillStyle = selectedColour;
+    // fill(x, y) {
+    //     if (!edited) {
+    //         // Just fill them all
+    //         canvasContext.fillStyle = selectedColour;
+    //         displayCanvasContext.fillStyle = selectedColour;
+    //         previewCanvasContext.fillStyle = selectedColour;
 
-            canvasContext.fillRect(0, 0, tWidth, tHeight);
-            displayCanvasContext.fillRect(0, 0, tWidth * pixelSize, tHeight * pixelSize);
-            displayCanvasContext.fillRect(0, 0, tWidth * 3, tHeight * 3);
+    //         canvasContext.fillRect(0, 0, tWidth, tHeight);
+    //         displayCanvasContext.fillRect(0, 0, tWidth * pixelSize, tHeight * pixelSize);
+    //         displayCanvasContext.fillRect(0, 0, tWidth * 3, tHeight * 3);
 
-            edited = true;
-        }
-        canvasContext.fillStyle = selectedColour;
-        canvasContext.fillFlood(x, y);
+    //         edited = true;
+    //     }
+    //     canvasContext.fillStyle = selectedColour;
+    //     canvasContext.fillFlood(x, y);
 
-        displayCanvasContext.fillStyle = selectedColour;
-        displayCanvasContext.fillFlood(x * pixelSize, y * pixelSize);
+    //     displayCanvasContext.fillStyle = selectedColour;
+    //     displayCanvasContext.fillFlood(x * pixelSize, y * pixelSize);
 
-        // Simulating the flood fill is more trouble than it's worth, instead we will
-        // just recreate the image from scratch
+    //     // Simulating the flood fill is more trouble than it's worth, instead we will
+    //     // just recreate the image from scratch
 
-        var data = canvasContext.getImageData(0, 0, tWidth, tHeight).data;
-        _.each(_.range(canvas.width), (x) => {
-            _.each(_.range(canvas.height), (y) => {
-                var idx = (y * tWidth + x) * 4;
-                var red = data[idx];
-                var green = data[idx + 1];
-                var blue = data[idx + 2];
-                var alpha = data[idx + 3];
+    //     var data = canvasContext.getImageData(0, 0, tWidth, tHeight).data;
+    //     _.each(_.range(canvas.width), (x) => {
+    //         _.each(_.range(canvas.height), (y) => {
+    //             var idx = (y * tWidth + x) * 4;
+    //             var red = data[idx];
+    //             var green = data[idx + 1];
+    //             var blue = data[idx + 2];
+    //             var alpha = data[idx + 3];
 
-                if (alpha == 0 && tBackground != null) {
-                    previewCanvasContext.fillStyle = tBackground;
-                } else {
-                    previewCanvasContext.fillStyle = "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
-                }
+    //             if (alpha == 0 && tBackground != null) {
+    //                 previewCanvasContext.fillStyle = tBackground;
+    //             } else {
+    //                 previewCanvasContext.fillStyle = "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+    //             }
 
-                _.each(_.range(3), (xx) => {
-                    _.each(_.range(3), (yy) => {
-                        previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
-                    });
-                });
-            });
-        });
-    },
+    //             _.each(_.range(3), (xx) => {
+    //                 _.each(_.range(3), (yy) => {
+    //                     previewCanvasContext.fillRect(xx * tWidth + x, yy * tHeight + y, 1, 1);
+    //                 });
+    //             });
+    //         });
+    //     });
+    // },
 
     eraser(x, y) {
         canvasContext.clearRect( x, y, 1, 1 );
