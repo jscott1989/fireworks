@@ -26,22 +26,22 @@ def index(request):
             data[category][key] = value
 
     def get_text(person, key, default=None):
-        try:
-            return person.texts.get(key=key).value
-        except models.Text.DoesNotExist:
+        k = person.texts.get(key=key)
+        if not k:
             return default
+        return k.value
 
     def get_image(person, key, default=None):
-        try:
-            return person.images.get(key=key).image.url
-        except models.Image.DoesNotExist:
+        k = person.images.filter(key=key).first()
+        if not k:
             return default
+        return k.image.url
 
     def get_sound(person, key, default=None):
-        try:
-            return person.sounds.get(key=key).sound.url
-        except models.Sound.DoesNotExist:
+        k = person.sounds.filter(key=key).first()
+        if not k:
             return default
+        return k.sound.url
 
     # The lowest will become our parent
 
