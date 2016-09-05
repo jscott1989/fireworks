@@ -52,7 +52,7 @@ module.exports = {
 
         setTimeout(() => {
             document.addEventListener('click', close);
-            document.addEventListener('keydown', closddeOnSpace);
+            document.addEventListener('keydown', closeOnSpace);
         }, 500);
 
         textContainer.innerHTML = ui.parseText(textStr);
