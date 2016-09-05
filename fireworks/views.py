@@ -10,7 +10,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from urllib.request import urlopen
 
-ROOT_URL = "http://localhost:8000"
+ROOT_URL = "https://storyofeveryone.herokuapp.com/"
 
 def index(request):
     sofar = models.Character.objects.filter(complete=True).count()
