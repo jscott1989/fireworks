@@ -106,6 +106,7 @@ def index(request):
     while (len(roles_to_fill) > 0 and len(lowest_children) > 0):
         person = lowest_children.pop(0)
         if person.pk not in used_pks:
+            used_pks.append(person.pk)
             next_role = roles_to_fill.pop(0)
             default("text", "%s_pk" % (next_role), person.pk)
 
@@ -132,8 +133,6 @@ def index(request):
             default("sound", "%s_greeting" % (next_role), get_sound(person, "greeting"))
             default("image", "%s_favouritetoy" % (next_role), get_image(person, "favouritetoy"))
 
-
-
     # Next, try to use people who haven't completed but have provided enough information
     if (len(roles_to_fill) > 0):
         # We have no more completed people to use, find uncompleted people with the greatest contribution and use them
@@ -150,13 +149,30 @@ def index(request):
                 # We ignore all the my_ stuff as if its not complete we don't want all our NPCs looking the same
                 next_role = roles_to_fill.pop(0)
                 default("text", "%s_pk" % (next_role), person.pk)
-                # TODO: if they've contributed baby stuff - use that baby stuff for this role
                 default("image", "%s_hair" % (next_role), get_image(person, "hair"))
                 default("sound", "%s_kiss" % (next_role), get_sound(person, "kiss"))
                 default("sound", "%s_cry" % (next_role), get_sound(person, "cry"))
                 default("sound", "%s_bump" % (next_role), get_sound(person, "bump"))
                 default("sound", "%s_greeting" % (next_role), get_sound(person, "greeting"))
                 default("image", "%s_favouritetoy" % (next_role), get_image(person, "favouritetoy"))
+                default("text", "%s_name" % (next_role), get_text(person, "name"))
+                if data["text"]["%s_name" % (next_role)] is not None:
+                    default("sound", "%s_name" % (next_role), get_sound(person, "name"))
+                if "%s_name" % (next_role) not in data["sound"] or data["sound"]["%s_name" % (next_role)] is None:
+                    data["text"]["%s_name" % (next_role)] = None
+
+                default("text", "%s_skin_color" % (next_role), get_text(person, "partner_skin_color"))
+                default("text", "%s_eye_color" % (next_role), get_text(person, "partner_eye_color"))
+                default("text", "%s_clothes_color" % (next_role), get_text(person, "clothes_color"))
+                default("text", "%s_eye_number" % (next_role), get_text(person, "child_eye_number"))
+                default("text", "%s_ear_number" % (next_role), get_text(person, "child_ear_number"))
+                default("text", "%s_nose_number" % (next_role), get_text(person, "child_nose_number"))
+                default("text", "%s_mouth_number" % (next_role), get_text(person, "child_mouth_number"))
+                default("text", "%s_accessories_number" % (next_role), get_text(person, "child_accessories_number"))
+                if len(incomplete) > 0:
+                    person = incomplete.pop(0)
+                else:
+                    person = None
 
     # Toys
     toys = list(models.Image.objects.filter(key="favouritetoy"))

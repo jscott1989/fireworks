@@ -157,12 +157,14 @@
                     {
                      "AI":"baby",
                      "data":"[\"friend1_skin_color\", \"friend1_eye_color\", \"friend1_clothes_color\", \"friend1_eye_number\", \"friend1_ear_number\", \"friend1_nose_number\", \"friend1_mouth_number\", \"friend1_accessories_number\", \"friend1_hair\"]",
+                     "greeting":"friend1_greeting",
                      "type":"baby"
                     },
                  "propertytypes":
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "type":"string"
                     },
                  "rotation":0,
@@ -180,13 +182,15 @@
                  "properties":
                     {
                      "AI":"baby",
-                     "data":"",
+                     "data":"[\"friend2_skin_color\", \"friend2_eye_color\", \"friend2_clothes_color\", \"friend2_eye_number\", \"friend2_ear_number\", \"friend2_nose_number\", \"friend2_mouth_number\", \"friend2_accessories_number\", \"friend2_hair\"]",
+                     "greeting":"friend2_greeting",
                      "type":"baby"
                     },
                  "propertytypes":
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "type":"string"
                     },
                  "rotation":0,
@@ -433,6 +437,7 @@
                     {
                      "AI":"baby",
                      "data":"[\"friend1_skin_color\", \"friend1_eye_color\", \"friend1_clothes_color\", \"friend1_eye_number\", \"friend1_ear_number\", \"friend1_nose_number\", \"friend1_mouth_number\", \"friend1_accessories_number\", \"friend1_hair\"]",
+                     "greeting":"friend1_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -440,6 +445,7 @@
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -459,6 +465,7 @@
                     {
                      "AI":"baby",
                      "data":"[\"friend2_skin_color\", \"friend2_eye_color\", \"friend2_clothes_color\", \"friend2_eye_number\", \"friend2_ear_number\", \"friend2_nose_number\", \"friend2_mouth_number\", \"friend2_accessories_number\", \"friend2_hair\"]",
+                     "greeting":"friend2_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -466,6 +473,7 @@
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -485,6 +493,7 @@
                     {
                      "AI":"baby",
                      "data":"[\"friend3_skin_color\", \"friend3_eye_color\", \"friend3_clothes_color\", \"friend3_eye_number\", \"friend3_ear_number\", \"friend3_nose_number\", \"friend3_mouth_number\", \"friend3_accessories_number\", \"friend3_hair\"]",
+                     "greeting":"friend3_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -492,6 +501,7 @@
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -555,6 +565,7 @@
                     {
                      "AI":"baby",
                      "data":"[\"teacher_skin_color\", \"teacher_eye_color\", \"teacher_clothes_color\", \"teacher_eye_number\", \"teacher_ear_number\", \"teacher_nose_number\", \"teacher_mouth_number\", \"teacher_accessories_number\", \"teacher_hair\"]",
+                     "greeting":"teacher_greeting",
                      "tag":"school-friends",
                      "type":"worker"
                     },
@@ -562,6 +573,7 @@
                     {
                      "AI":"string",
                      "data":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -890,6 +902,7 @@
                      "AI":"dance",
                      "data":"[\"friend4_skin_color\", \"friend4_eye_color\", \"friend4_clothes_color\", \"friend4_eye_number\", \"friend4_ear_number\", \"friend4_nose_number\", \"friend4_mouth_number\", \"friend4_accessories_number\", \"friend4_hair\"]",
                      "friend_id":"4",
+                     "greeting":"friend4_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -898,6 +911,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -918,6 +932,7 @@
                      "AI":"dance",
                      "data":"[\"friend3_skin_color\", \"friend3_eye_color\", \"friend3_clothes_color\", \"friend3_eye_number\", \"friend3_ear_number\", \"friend3_nose_number\", \"friend3_mouth_number\", \"friend3_accessories_number\", \"friend3_hair\"]",
                      "friend_id":"3",
+                     "greeting":"friend3_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -926,6 +941,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -946,6 +962,7 @@
                      "AI":"dance",
                      "data":"[\"friend6_skin_color\", \"friend6_eye_color\", \"friend6_clothes_color\", \"friend6_eye_number\", \"friend6_ear_number\", \"friend6_nose_number\", \"friend6_mouth_number\", \"friend6_accessories_number\", \"friend6_hair\"]",
                      "friend_id":"6",
+                     "greeting":"friend6_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -954,6 +971,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -974,6 +992,7 @@
                      "AI":"dance",
                      "data":"[\"friend7_skin_color\", \"friend7_eye_color\", \"friend7_clothes_color\", \"friend7_eye_number\", \"friend7_ear_number\", \"friend7_nose_number\", \"friend7_mouth_number\", \"friend7_accessories_number\", \"friend7_hair\"]",
                      "friend_id":"7",
+                     "greeting":"friend7_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -982,6 +1001,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -1002,6 +1022,7 @@
                      "AI":"dance",
                      "data":"[\"friend8_skin_color\", \"friend8_eye_color\", \"friend8_clothes_color\", \"friend8_eye_number\", \"friend8_ear_number\", \"friend8_nose_number\", \"friend8_mouth_number\", \"friend8_accessories_number\", \"friend8_hair\"]",
                      "friend_id":"8",
+                     "greeting":"friend8_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -1010,6 +1031,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },
@@ -1030,6 +1052,7 @@
                      "AI":"dance",
                      "data":"[\"friend5_skin_color\", \"friend5_eye_color\", \"friend5_clothes_color\", \"friend5_eye_number\", \"friend5_ear_number\", \"friend5_nose_number\", \"friend5_mouth_number\", \"friend5_accessories_number\", \"friend5_hair\"]",
                      "friend_id":"5",
+                     "greeting":"friend_5_greeting",
                      "tag":"school-friends",
                      "type":"school-student"
                     },
@@ -1038,6 +1061,7 @@
                      "AI":"string",
                      "data":"string",
                      "friend_id":"string",
+                     "greeting":"string",
                      "tag":"string",
                      "type":"string"
                     },

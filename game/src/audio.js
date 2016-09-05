@@ -79,6 +79,16 @@ module.exports = {
         }
     },
 
+    playOld(key, callback) {
+        var audio = new Audio(data.sound[key]);
+        audio.addEventListener("ended", () => {
+            if (callback != null) {
+                callback();
+            }
+        });
+        audio.play();
+    },
+
     promptForSound(key, title, instruction, callback) {
         // Show an overlay to prompt for sound
         if (_.has(sounds, key)) {

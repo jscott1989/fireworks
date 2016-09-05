@@ -22,6 +22,7 @@ var interactableSpriteGroup;
 var itemsGroup;
 var charactersGroup;
 var doorsGroup;
+var greetings = [];
 
 var walkSpeed = 50;
 var jumpHeight = 0;
@@ -49,7 +50,7 @@ var tilesheetModifications = [
 
 const instantiateNPC = (obj) => {
     
-        var skin_color = _.sample(["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]);
+    var skin_color = _.sample(["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]);
     var eye_color = _.sample(["#1907ba", "#776536", "#76c4ae", "#6ca580"]);
     var clothes_color = _.sample(["#2BACBB", "#E4266F", "#151928", "#E2BC03", "#89B8FF"]);
     var eye_number = _.random(0, 4);
@@ -76,7 +77,7 @@ const instantiateNPC = (obj) => {
         clothes_color = text.get("uniform");
     }
 
-            createCharacter(obj.properties.type, obj.x + 32, obj.y,
+    createCharacter(obj.properties.type, obj.x + 32, obj.y,
     skin_color,
     eye_color,
     clothes_color,
@@ -87,6 +88,10 @@ const instantiateNPC = (obj) => {
     accessories_number, hair, (character) => {
         character.npc = AITypes[obj.properties.AI](character, obj.properties);
         character.properties = obj.properties;
+
+        if (obj.properties.greeting) {
+            greetings.push(character);
+        }
     });
 }
 
@@ -1003,6 +1008,8 @@ const interactionTypes = {
                     );
                 } else if (script.type == "findPartner") {
                     findingPartner = true;
+                    greetings = [];
+
                     parseScript(scripts);
                 } else if (script.type == "changeOutOfSchoolClothes") {
                     interactionTypes["changeSprite"](self, {"new-sprite": "child"});
@@ -1287,6 +1294,16 @@ module.exports = {
         _.each(charactersGroup.children, (c) => {
             if (c && c.npc != null) {
                 c.npc();
+            }
+        });
+
+        greetings = _.reject(greetings, (c) => {
+            if (c) {
+                if (game.physics.arcade.overlap(globalPlayer, c)) {
+                    audio.playOld(c.properties.greeting);
+                    return true;
+                };
+                return false;
             }
         });
 
