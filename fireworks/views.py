@@ -137,17 +137,20 @@ def index(request):
     # Next, try to use people who haven't completed but have provided enough information
     if (len(roles_to_fill) > 0):
         # We have no more completed people to use, find uncompleted people with the greatest contribution and use them
-        incomplete = [l for l in models.Character.objects.filter(complete=False).exclude(parent=parent)]
+        incomplete = [l for l in models.Character.objects.filter(complete=False)]
 
         incomplete = sorted(incomplete, key=lambda i : i.images.count() + i.sounds.count(), reverse=True)
-
-        person = incomplete.pop(0)
+        if len(incomplete) > 0:
+            person = incomplete.pop(0)
+        else:
+            person = None
 
         while len(roles_to_fill) > 0 and person is not None:
                 # Fill it as best we can
                 # We ignore all the my_ stuff as if its not complete we don't want all our NPCs looking the same
                 next_role = roles_to_fill.pop(0)
                 default("text", "%s_pk" % (next_role), person.pk)
+                # TODO: if they've contributed baby stuff - use that baby stuff for this role
                 default("image", "%s_hair" % (next_role), get_image(person, "hair"))
                 default("sound", "%s_kiss" % (next_role), get_sound(person, "kiss"))
                 default("sound", "%s_cry" % (next_role), get_sound(person, "cry"))
