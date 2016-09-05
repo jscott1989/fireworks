@@ -17,10 +17,18 @@ module.exports = {
         return sounds;
     },
 
+    setMass(data, callback) {
+        _.each(_.keys(data), (key) => {
+            sounds[key] = data[key];
+        });
+        upload.setSound(data, callback);
+    },
 
-    setURL(key, value) {
+    setURL(key, value, callback) {
         sounds[key] = value;
-        upload.setSound(key, value);
+        var d = {};
+        d[key] = value;
+        upload.setSound(d, callback);
     },
 
     init(callback) {

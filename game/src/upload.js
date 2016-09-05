@@ -60,8 +60,8 @@ const upload = (url, data, callback, isFile) => {
 }
 
 module.exports = {
-    init(callback) {
-        var d = {};
+    init(text, sounds, callback) {
+        var d = {"data": JSON.stringify({"texts": text, "sounds": sounds})};
         if (_.has(data, 'parent')) {
             d['parent'] = data.parent;
         }
@@ -71,35 +71,33 @@ module.exports = {
         });
     },
 
-    uploadText(key, value) {
-        upload("/text/" + uploadId, {key: key, value: value});
+    uploadText(data, callback) {
+        upload("/text/" + uploadId, {"data": JSON.stringify(data)}, callback);
     },
 
-    uploadImage(key, blob) {
+    uploadImage(key, blob, callback) {
         var fd = new FormData();
         fd.append('key', key);
         fd.append('data', blob);
-        upload('/image/' + uploadId, fd, () => {}, true);
+        upload('/image/' + uploadId, fd, callback, true);
     },
 
-    setImage(key, value) {
-        upload("/setImage/" + uploadId, {key: key, value: value});
+    setImage(data, callback) {
+        upload("/setImage/" + uploadId, {"data": JSON.stringify(data)}, callback);
     },
 
-    uploadSound(key, blob) {
+    uploadSound(key, blob, callback) {
         var fd = new FormData();
         fd.append('key', key);
         fd.append('data', blob);
-        upload('/sound/' + uploadId, fd, () => {}, true);
+        upload('/sound/' + uploadId, fd, callback, true);
     },
 
-    setSound(key, value) {
-        upload("/setSound/" + uploadId, {key: key, value: value});
+    setSound(data, callback) {
+        upload("/setSound/" + uploadId, {"data": JSON.stringify(data)}, callback);
     },
 
     complete(callback) {
-        upload('/complete/' + uploadId, {}, () => {
-            callback();
-        })
+        upload('/complete/' + uploadId, {}, callback);
     }
 }

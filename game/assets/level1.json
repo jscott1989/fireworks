@@ -1139,11 +1139,13 @@
                  "name":"door",
                  "properties":
                     {
+                     "closed":true,
                      "id":"kiss",
                      "sprite":"school-door"
                     },
                  "propertytypes":
                     {
+                     "closed":"bool",
                      "id":"string",
                      "sprite":"string"
                     },
@@ -1781,14 +1783,58 @@
                 {
                  "gid":1,
                  "height":64,
-                 "id":198,
+                 "id":199,
+                 "name":"school setup",
+                 "properties":
+                    {
+                     "script":"[\n    {\"type\":\"narrate\", \"data\":[\n\t[\"<%name%> moved on to school, and they excelled in many subjects.\", [\"<%name%>\", \"\/s\/assets\/narration\/movedontoschool.mp3\"]],\n\t[\"Like everyone at the school, <%name%> hated the uniforms.\", [\"\/s\/assets\/narration\/likeeveryone.mp3\", \"<%name%>\", \"\/s\/assets\/narration\/hatedtheuniforms.mp3\"]]\n]},\n    {\"type\": \"colour\", \"key\": \"uniform\", \"title\": \"School uniform colour\", \"instruction\": \"What colour was the school uniform?\"},\n    {\"type\":\"narrate\", \"data\":[\n\t[\"How uncool! And the tie...\", [\"\/s\/assets\/narration\/howuncool.mp3\"]]]},\n    {\"type\": \"image\", \"key\": \"tie\", \"title\": \"School uniform tie\", \"instruction\": \"Draw the tie\", \"width\": 9, \"height\": 16, \"guide\": \"\/s\/assets\/guides\/tie-guide.png\"},\n    {\"type\": \"insantiateLazyNPC\", \"tag\": \"school-friends\"}\n]",
+                     "type":"script"
+                    },
+                 "propertytypes":
+                    {
+                     "script":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":5376,
+                 "y":960
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":200,
+                 "name":"change to school student",
+                 "properties":
+                    {
+                     "new-sprite":"school-student",
+                     "type":"changeSprite"
+                    },
+                 "propertytypes":
+                    {
+                     "new-sprite":"string",
+                     "type":"string"
+                    },
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":64,
+                 "x":5440,
+                 "y":960
+                }, 
+                {
+                 "gid":1,
+                 "height":64,
+                 "id":201,
                  "name":"spawn",
                  "rotation":0,
                  "type":"player",
                  "visible":true,
                  "width":64,
-                 "x":320,
-                 "y":448
+                 "x":5312,
+                 "y":960
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1797,7 +1843,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":199,
+ "nextobjectid":202,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":64,

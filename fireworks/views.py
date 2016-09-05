@@ -81,6 +81,7 @@ def index(request):
     while (len(roles_to_fill) > 0 and len(lowest_children) > 0):
         next_role = roles_to_fill.pop(0)
         person = lowest_children.pop(0)
+        default("text", "%s_pk" % (next_role), person.pk)
         default("text", "%s_name" % (next_role), person.texts.get(key="my_name").value)
         default("sound", "%s_name" % (next_role), person.sounds.get(key="my_name").sound.url)
         default("text", "%s_skin_color" % (next_role), person.texts.get(key="my_skin_color").value)
@@ -237,6 +238,26 @@ def startupload(request):
         parent = None
     c = models.Character(parent=parent)
     c.save()
+
+    d = json.loads(request.POST['data'])
+    print("data", d)
+    for k, v in d["texts"].items():
+        models.Text(character=c, key=k, value=v).save()
+
+    for k, v in d["sounds"].items():
+        im = models.Sound(character=c, key=k)
+
+        url = v
+        if not url.startswith("http"):
+            url = settings.ROOT_URL + url
+
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(urlopen(url).read())
+        img_temp.flush()
+
+        im.save()
+        im.sound.save("tmp.webm", img_temp)
+
     return JsonResponse({"id": c.pk})
 
 
@@ -244,7 +265,9 @@ def startupload(request):
 def uploadtext(request, uploadid):
     """Store text."""
     c = models.Character.objects.get(pk=uploadid)
-    models.Text(character=c, key=request.POST['key'], value=request.POST['value']).save()
+    texts = json.loads(request.POST["data"])
+    for k, v in texts.items():
+        models.Text(character=c, key=k, value=v).save()
     return JsonResponse({})
 
 
@@ -261,38 +284,42 @@ def uploadimage(request, uploadid):
 def setimage(request, uploadid):
     c = models.Character.objects.get(pk=uploadid)
 
-    im = models.Image(character=c, key=request.POST['key'])
+    images = json.loads(request.POST["data"])
 
-    url = request.POST['value']
-    if not url.startswith("http"):
-        url = settings.ROOT_URL + url
+    for k, v in images.items():
+        im = models.Image(character=c, key=k)
 
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urlopen(url).read())
-    img_temp.flush()
+        url = v
+        if not url.startswith("http"):
+            url = settings.ROOT_URL + url
 
-    im.save()
-    im.image.save("tmp.png", img_temp)
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(urlopen(url).read())
+        img_temp.flush()
+
+        im.save()
+        im.image.save("tmp.png", img_temp)
     return JsonResponse({})
 
 @csrf_exempt
 def setsound(request, uploadid):
     c = models.Character.objects.get(pk=uploadid)
 
-    im = models.Sound(character=c, key=request.POST['key'])
+    sounds = json.loads(request.POST["data"])
 
-    url = request.POST['value']
-    print(url)
-    if not url.startswith("http"):
-        url = settings.ROOT_URL + url
-        print("Add",url)
+    for k, v in sounds.items():
+        im = models.Sound(character=c, key=k)
 
-    img_temp = NamedTemporaryFile(delete=True)
-    img_temp.write(urlopen(url).read())
-    img_temp.flush()
+        url = v
+        if not url.startswith("http"):
+            url = settings.ROOT_URL + url
 
-    im.save()
-    im.sound.save("tmp.webm", img_temp)
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(urlopen(url).read())
+        img_temp.flush()
+
+        im.save()
+        im.sound.save("tmp.webm", img_temp)
     return JsonResponse({})
 
 

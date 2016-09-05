@@ -32,9 +32,18 @@ module.exports = {
         return text[key];
     },
 
-    set(key, value) {
+    setMass(data, callback) {
+        _.each(_.keys(data), (key) => {
+            text[key] = data[key];
+        });
+        upload.uploadText(data, callback);
+    },
+
+    set(key, value, callback) {
         text[key] = value;
-        upload.uploadText(key, value);
+        var d = {};
+        d[key] = value;
+        upload.uploadText(d, callback);
     },
 
     getOrAsk(key, title, instruction, c) {
@@ -43,7 +52,9 @@ module.exports = {
         } else {
             this.open(title, instruction, (t) => {
                 text[key] = t;
-                upload.uploadText(key, t);
+                var d = {};
+                d[key] = t;
+                upload.uploadText(d);
                 c(t);
             });
         }

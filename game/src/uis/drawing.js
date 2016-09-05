@@ -211,15 +211,24 @@ const drawOverlay = () => {
 }
 
 module.exports = {
-    setURL(key, value) {
-        drawings[key] = value;
-        upload.setImage(key, value);
+    setMass(data, callback) {
+        _.each(_.keys(data), (key) => {
+            drawings[key] = data[key];
+        });
+        upload.setImage(data, callback);
     },
 
-    set(key, value) {
+    setURL(key, value, callback) {
+        drawings[key] = value;
+        var d = {};
+        d[key] = value;
+        upload.setImage(d, callback);
+    },
+
+    set(key, value, callback) {
         dataURLtoBlob(value, (blob) => {
             drawings[key] = value;
-            upload.uploadImage(key, blob);
+            upload.uploadImage(key, blob, callback);
         });
     },
 

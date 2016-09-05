@@ -527,21 +527,28 @@ const createCharacter = (type, x, y,
 }
 
 const selectPartner = (character) => {
-    text.set("partner_name", data.text["friend" + character.properties.friend_id + "_name"]);
-    text.set("partner_skin_color", data.text["friend" + character.properties.friend_id + "_skin_color"]);
-    text.set("partner_eye_color", data.text["friend" + character.properties.friend_id + "_eye_color"]);
-    text.set("partner_clothes_color", data.text["friend" + character.properties.friend_id + "_clothes_color"]);
-    text.set("partner_eye_number", data.text["friend" + character.properties.friend_id + "_eye_number"]);
-    text.set("partner_ear_number", data.text["friend" + character.properties.friend_id + "_ear_number"]);
-    text.set("partner_nose_number", data.text["friend" + character.properties.friend_id + "_nose_number"]);
-    text.set("partner_mouth_number", data.text["friend" + character.properties.friend_id + "_mouth_number"]);
-    text.set("partner_accessories_number", data.text["friend" + character.properties.friend_id + "_accessories_number"]);
-    drawing.setURL("partner_hair", data.image["friend" + character.properties.friend_id + "_hair"]);
-    audio.setURL("partner_name", data.sound["friend" + character.properties.friend_id + "_name"])
-    audio.setURL("partner_kiss", data.sound["friend" + character.properties.friend_id + "_kiss"])
-    audio.setURL("partner_cry", data.sound["friend" + character.properties.friend_id + "_cry"])
-    audio.setURL("partner_bump", data.sound["friend" + character.properties.friend_id + "_bump"])
-    audio.setURL("partner_greeting", data.sound["friend" + character.properties.friend_id + "_greeting"])
+    text.setMass({
+        "partner_pk": data.text["friend" + character.properties.friend_id + "_pk"],
+        "partner_name": data.text["friend" + character.properties.friend_id + "_name"],
+        "partner_skin_color": data.text["friend" + character.properties.friend_id + "_skin_color"],
+        "partner_eye_color": data.text["friend" + character.properties.friend_id + "_eye_color"],
+        "partner_clothes_color": data.text["friend" + character.properties.friend_id + "_clothes_color"],
+        "partner_eye_number": data.text["friend" + character.properties.friend_id + "_eye_number"],
+        "partner_ear_number": data.text["friend" + character.properties.friend_id + "_ear_number"],
+        "partner_nose_number": data.text["friend" + character.properties.friend_id + "_nose_number"],
+        "partner_mouth_number": data.text["friend" + character.properties.friend_id + "_mouth_number"],
+        "partner_accessories_number": data.text["friend" + character.properties.friend_id + "_accessories_number"]
+    }, () => {
+        drawing.setURL("partner_hair", data.image["friend" + character.properties.friend_id + "_hair"], () => {
+            audio.setMass({
+                "partner_name": data.sound["friend" + character.properties.friend_id + "_name"],
+                "partner_kiss": data.sound["friend" + character.properties.friend_id + "_kiss"],
+                "partner_cry": data.sound["friend" + character.properties.friend_id + "_cry"],
+                "partner_bump": data.sound["friend" + character.properties.friend_id + "_bump"],
+                "partner_greeting": data.sound["friend" + character.properties.friend_id + "_greeting"]
+            });
+        });
+    });
 
     findingPartner = false;
     character.npc = AITypes["partner_follow"](character);
@@ -577,6 +584,11 @@ const kiss = () => {
         ["How beautiful.", ["/s/assets/narration/howbeautiful.mp3"]],
         ["<%name%> and <#partner_name#> continued on their journey together.", ["<%name%>", "/s/assets/narration/and.mp3", "<#partner_name#>", "/s/assets/narration/continuedon.mp3"]]
     ]);
+
+    var door = doors["kiss"];
+    door.body.enable = false;
+    door.visible = false;
+    doorsGroup.remove(door);
 }
 
 const AITypes = {
@@ -812,6 +824,7 @@ const interactionTypes = {
         var door = doors[i.door];
         door.visible = true;
         game.physics.enable(door, Phaser.Physics.ARCADE);
+        door.body.enable = true;
         door.body.immovable = true;
         doorsGroup.add(door);
 
@@ -879,7 +892,7 @@ const interactionTypes = {
             clothes = text.get("uniform");
         }
 
-        createCharacter(p["new-sprite"], oldChild.position.x, oldChild.position.y, data.text["skin_color"],
+        createCharacter(p["new-sprite"], oldChild.position.x, oldChild.position.y, text.get("partner_skin_color"),
         text.get("partner_eye_color"),
         clothes,
         text.get("child_eye_number"),
@@ -1164,7 +1177,13 @@ module.exports = {
             this.createInteractableSprite(obj.x, obj.y, obj.properties);
         } else if (obj.type == "door") {
             doors[obj.properties.id] = game.add.sprite(obj.x, obj.y, obj.properties.sprite);
-            doors[obj.properties.id].visible = false;
+            if (!obj.properties.closed) {
+                doors[obj.properties.id].visible = false;
+            } else {
+                game.physics.enable(doors[obj.properties.id], Phaser.Physics.ARCADE);
+                doors[obj.properties.id].body.immovable = true;
+                doorsGroup.add(doors[obj.properties.id]);
+            }
         } else if (obj.type == "player") {
             var self = this;
             createCharacter("baby", obj.x + 32, obj.y, data.text["skin_color"],
@@ -1225,28 +1244,30 @@ module.exports = {
 
         charactersGroup = game.add.group();
 
+        doorsGroup = game.add.group();
+
         _.each(level1.objects.objects, (obj) => {
             this.createObject(obj);
         });
 
         const front = level1.createLayer('front');
 
-        doorsGroup = game.add.group();
-
         // Set up special platforms
         setTileCollision(this.level1_level, [137], {top: true, bottom: false, left: false, right: false});
 
-        upload.init(() => {
-            text.set("my_skin_color", data.text["skin_color"]);
-            text.set("my_eye_color", data.text["eye_color"]);
-            text.set("my_clothes_color", data.text["clothes_color"]);
-            text.set("my_eye_number", data.text["eye_number"]);
-            text.set("my_ear_number", data.text["ear_number"]);
-            text.set("my_nose_number", data.text["nose_number"]);
-            text.set("my_mouth_number", data.text["mouth_number"]);
-            text.set("my_accessories_number", data.text["accessories_number"]);
-            text.set("my_name", data.text["name"]);
-            audio.setURL("my_name", data.sound["name"]);
+        game.world.bringToTop(doorsGroup);
+
+        upload.init({
+                "my_skin_color": data.text["skin_color"],
+                "my_eye_color": data.text["eye_color"],
+                "my_clothes_color": data.text["clothes_color"],
+                "my_eye_number": data.text["eye_number"],
+                "my_ear_number": data.text["ear_number"],
+                "my_nose_number": data.text["nose_number"],
+                "my_mouth_number": data.text["mouth_number"],
+                "my_accessories_number": data.text["accessories_number"],
+                "my_name": data.text["name"]
+            }, {"my_name": data.sound["name"]}, () => {
         });
     },
 
