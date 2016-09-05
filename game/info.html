@@ -1,0 +1,24 @@
+{% load story %}
+<h1>Story of Everyone</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Texts</th>
+            <th>Images</th>
+            <th>Sounds</th>
+            <th>Complete</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for character in characters %}
+        <tr>
+            <th><a href="/detail/{{character.pk}}">{{character|get_text:"my_name"}}</a></th>
+            <td>{{character.texts.count}}</td>
+            <td>{{character.images.count}}</td>
+            <td>{{character.sounds.count}}</td>
+            <td>{{character.complete}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

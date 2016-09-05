@@ -1,0 +1,60 @@
+{% load story %}
+<h1>{{character|get_text:"my_name"}}</h1>
+
+<strong>Text</strong>
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for text in character.texts.all %}
+        <tr>
+            <th>{{text.key}}</th>
+            <td>{{text.value}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<strong>Image</strong>
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for image in character.images.all %}
+        <tr>
+            <th>{{image.key}}</th>
+            <td><img src="{{image.image.url}}" /></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<strong>Sound</strong>
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for sound in character.sounds.all %}
+        <tr>
+            <th>{{sound.key}}</th>
+            <td>
+                <audio controls>
+                  <source src="{{sound.sound.url}}" type="audio/webm">
+                  Your browser does not support the audio tag.
+                </audio>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

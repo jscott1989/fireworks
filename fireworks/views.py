@@ -10,6 +10,15 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from urllib.request import urlopen
 
+
+def info(request):
+    characters = models.Character.objects.all()
+    return render(request, "info.html", {"characters": characters})
+
+def detail(request, pk):
+    character = models.Character.objects.get(pk=pk)
+    return render(request, "detail.html", {"character": character})
+
 def index(request):
     sofar = models.Character.objects.filter(complete=True).count()
     data = {
