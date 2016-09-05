@@ -135,3 +135,6 @@ if USE_LIVE_DATA:
     MEDIA_URL = 'https://s3-eu-west-1.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
     # MEDIA_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto.S3BotoStorage"
+
+
+ROOT_URL = os.environ['ROOT_URL']

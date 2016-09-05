@@ -4,6 +4,7 @@
 
 import ui from './ui';
 import pause from '../pause';
+import toWords from '../lib/towords';
 
 var container;
 var textContainer;
@@ -33,7 +34,18 @@ const close = () => {
 
 const play = () => {
     if (audioFiles.length > 0) {
-        var a = ui.parseSound(audioFiles.shift());
+        var audioSource = audioFiles.shift();
+        if (audioSource == "<%sofar%>") {
+            // Special case... Re-add the numbers to the list
+            audioFiles = _.map(_.filter(toWords(data.text["sofar"]).split(/[ \-]+/), (n) => {
+                return n;
+            }), (n) => {
+                return "/s/assets/narration/" + n + ".mp3";
+            }).concat(audioFiles);
+            play();
+            return;
+        };
+        var a = ui.parseSound(audioSource);
         audioPlayer = new Audio(a);
         audioPlayer.addEventListener("ended", play);
         audioPlayer.play();

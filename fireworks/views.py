@@ -10,8 +10,6 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from urllib.request import urlopen
 
-ROOT_URL = "https://storyofeveryone.herokuapp.com/"
-
 def index(request):
     sofar = models.Character.objects.filter(complete=True).count()
     data = {
@@ -267,7 +265,7 @@ def setimage(request, uploadid):
 
     url = request.POST['value']
     if not url.startswith("http"):
-        url = ROOT_URL + url
+        url = settings.ROOT_URL + url
 
     img_temp = NamedTemporaryFile(delete=True)
     img_temp.write(urlopen(url).read())
@@ -284,8 +282,10 @@ def setsound(request, uploadid):
     im = models.Sound(character=c, key=request.POST['key'])
 
     url = request.POST['value']
+    print(url)
     if not url.startswith("http"):
-        url = ROOT_URL + url
+        url = settings.ROOT_URL + url
+        print("Add",url)
 
     img_temp = NamedTemporaryFile(delete=True)
     img_temp.write(urlopen(url).read())
