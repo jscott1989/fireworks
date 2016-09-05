@@ -13,11 +13,93 @@ from urllib.request import urlopen
 ROOT_URL = "http://localhost:8000"
 
 def index(request):
-    data = {}
     sofar = models.Character.objects.filter(complete=True).count()
-    # if (sofar > 0):
-    #     # Find the lowest number of children
-    #     lowest_children = models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children").first()
+    data = {
+        "text": {
+            "sofar": sofar
+        },
+        "image": {},
+        "sound": {}
+        }
+    lowest_children = [l for l in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children")]
+
+    def default(category, key, value):
+        if key not in data[category]:
+            data[category][key] = value
+
+    # The lowest will be come our parent
+    
+    if len(lowest_children) > 0:
+        parent = lowest_children.pop(0)
+        data["parent"] = parent.pk
+
+        default("text", "parent_skin_color", parent.texts.get(key="my_skin_color").value)
+        default("text", "parent_eye_color", parent.texts.get(key="my_eye_color").value)
+        default("text", "parent_clothes_color", parent.texts.get(key="my_clothes_color").value)
+        default("text", "parent_eye_number", parent.texts.get(key="my_eye_number").value)
+        default("text", "parent_ear_number", parent.texts.get(key="my_ear_number").value)
+        default("text", "parent_nose_number", parent.texts.get(key="my_nose_number").value)
+        default("text", "parent_mouth_number", parent.texts.get(key="my_mouth_number").value)
+        default("text", "parent_accessories_number", parent.texts.get(key="my_accessories_number").value)
+        default("image", "parent_hair", parent.images.get(key="hair").image.url)
+
+        default("text", "partner_skin_color", parent.texts.get(key="partner_skin_color").value)
+        default("text", "partner_eye_color", parent.texts.get(key="partner_eye_color").value)
+        default("text", "partner_clothes_color", parent.texts.get(key="partner_clothes_color").value)
+        default("text", "partner_eye_number", parent.texts.get(key="partner_eye_number").value)
+        default("text", "partner_ear_number", parent.texts.get(key="partner_ear_number").value)
+        default("text", "partner_nose_number", parent.texts.get(key="partner_nose_number").value)
+        default("text", "partner_mouth_number", parent.texts.get(key="partner_mouth_number").value)
+        default("text", "partner_accessories_number", parent.texts.get(key="partner_accessories_number").value)
+        default("image", "partner_hair", parent.images.get(key="partner_hair").image.url)
+
+        default("text", "skin_color", parent.texts.get(key="my_skin_color").value)
+        default("text", "eye_color", parent.texts.get(key="partner_eye_color").value)
+        default("text", "clothes_color", parent.texts.get(key="clothes_color").value)
+        default("text", "eye_number", parent.texts.get(key="child_eye_number").value)
+        default("text", "ear_number", parent.texts.get(key="child_ear_number").value)
+        default("text", "nose_number", parent.texts.get(key="child_nose_number").value)
+        default("text", "mouth_number", parent.texts.get(key="child_mouth_number").value)
+        default("text", "accessories_number", parent.texts.get(key="child_accessories_number").value)
+
+        default("image", "wallpaper", parent.images.get(key="wallpaper").image.url)
+        default("text", "parent_name", parent.texts.get(key="my_name").value)
+        default("text", "partner_name", parent.texts.get(key="partner_name").value)
+        default("text", "name", parent.texts.get(key="name").value)
+
+        default("sound", "parent_name", parent.sounds.get(key="my_name").sound.url)
+        default("sound", "parent_greeting", parent.sounds.get(key="greeting").sound.url)
+        default("sound", "parent_cry", parent.sounds.get(key="cry").sound.url)
+        default("sound", "partner_name", parent.sounds.get(key="partner_name").sound.url)
+        default("sound", "partner_greeting", parent.sounds.get(key="partner_greeting").sound.url)
+        default("sound", "partner_cry", parent.sounds.get(key="partner_cry").sound.url)
+        default("sound", "name", parent.sounds.get(key="name").sound.url)
+
+        default("image", "blackboard", parent.images.get(key="blackboard").image.url)
+        default("sound", "music", parent.sounds.get(key="song").sound.url)
+
+    roles_to_fill = ["friend3", "friend4", "friend1", "friend2", "friend5", "friend6", "friend7", "friend8", "teacher"]
+
+    while (len(roles_to_fill) > 0 and len(lowest_children) > 0):
+        next_role = roles_to_fill.pop(0)
+        person = lowest_children.pop(0)
+        default("text", "%s_name" % (next_role), person.texts.get(key="my_name").value)
+        default("sound", "%s_name" % (next_role), person.sounds.get(key="my_name").sound.url)
+        default("text", "%s_skin_color" % (next_role), person.texts.get(key="my_skin_color").value)
+        default("text", "%s_eye_color" % (next_role), person.texts.get(key="my_eye_color").value)
+        default("text", "%s_clothes_color" % (next_role), person.texts.get(key="my_clothes_color").value)
+        default("text", "%s_eye_number" % (next_role), person.texts.get(key="my_eye_number").value)
+        default("text", "%s_ear_number" % (next_role), person.texts.get(key="my_ear_number").value)
+        default("text", "%s_nose_number" % (next_role), person.texts.get(key="my_nose_number").value)
+        default("text", "%s_mouth_number" % (next_role), person.texts.get(key="my_mouth_number").value)
+        default("text", "%s_accessories_number" % (next_role), person.texts.get(key="my_accessories_number").value)
+        default("image", "%s_hair" % (next_role), person.images.get(key="hair").image.url)
+        default("sound", "%s_kiss" % (next_role), person.sounds.get(key="kiss").sound.url)
+        default("sound", "%s_cry" % (next_role), person.sounds.get(key="cry").sound.url)
+        default("sound", "%s_bump" % (next_role), person.sounds.get(key="bump").sound.url)
+        default("sound", "%s_greeting" % (next_role), person.sounds.get(key="greeting").sound.url)
+
+
     #     lowest_children_count = lowest_children.children.count()
 
     #     all_lowest_children = [x for x in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).filter(num_children=lowest_children_count).all()]
@@ -32,16 +114,6 @@ def index(request):
     #     data["text"]["sofar"] = sofar
 
     # Now we must fill in blank information
-    if "text" not in data:
-        data["text"] = {"sofar": 0}
-    if "image" not in data:
-        data["image"] = {}
-    if "sound" not in data:
-        data["sound"] = {}
-
-    def default(category, key, value):
-        if key not in data[category]:
-            data[category][key] = value
 
 
     SKIN_COLORS = ["#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"]
@@ -90,6 +162,8 @@ def index(request):
     default("text", "partner_mouth_number", 1)
     default("text", "partner_accessories_number", 1)
     default("image", "partner_hair", "/s/assets/demo/hair/boy2.png")
+
+    # Done to here
 
     # Friends
     friend_names = ["Chris", "Charlie", "Jamie", "Skyler", "Justice", "Dakota", "Lennon", "Rowan", "Hunter", "Harper", "Dylan", "Jordyn", "Blake"]

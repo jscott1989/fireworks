@@ -9,6 +9,7 @@
  import setTileCollision from '../lib/set-tile-collision';
  import upload from '..//upload';
  import _ from 'lodash';
+ import end from '../uis/end';
 
 
 var stopParentsFollowing = false;
@@ -1041,7 +1042,7 @@ const interactionTypes = {
                     parseScript(scripts);
                 } else if (script.type == "endGame") {
                     upload.complete(() => {
-                        console.log("SHOW FINAL SCENE");
+                        end.open();
                         parseScript(scripts);
                     });
                 } else if (script.type == "prepareKiss") {
@@ -1236,6 +1237,16 @@ module.exports = {
         setTileCollision(this.level1_level, [137], {top: true, bottom: false, left: false, right: false});
 
         upload.init(() => {
+            text.set("my_skin_color", data.text["skin_color"]);
+            text.set("my_eye_color", data.text["eye_color"]);
+            text.set("my_clothes_color", data.text["clothes_color"]);
+            text.set("my_eye_number", data.text["eye_number"]);
+            text.set("my_ear_number", data.text["ear_number"]);
+            text.set("my_nose_number", data.text["nose_number"]);
+            text.set("my_mouth_number", data.text["mouth_number"]);
+            text.set("my_accessories_number", data.text["accessories_number"]);
+            text.set("my_name", data.text["name"]);
+            audio.setURL("my_name", data.sound["name"]);
         });
     },
 
