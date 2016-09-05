@@ -847,10 +847,10 @@ const interactionTypes = {
         i.frame = 1;
 
         graphics.createSprite([
-            ['<%friends_toy_1%>', [[0, 0]]]],
+            ['<%friends_toy1%>', [[0, 0]]]],
             [],[],
             32, 32, 1, (id) => {
-                itemsGroup.create(i.x + 64, i.y + 64, id);
+                itemsGroup.create(i.x + 20, i.y + 96, id);
             }
         );
 
@@ -858,7 +858,7 @@ const interactionTypes = {
             ['<%friends_toy2%>', [[0, 0]]]],
             [],[],
             32, 32, 1, (id) => {
-                itemsGroup.create(i.x + 80, i.y + 64, id);
+                itemsGroup.create(i.x + 80, i.y + 96, id);
             }
         );
 
@@ -871,7 +871,7 @@ const interactionTypes = {
                     ['<#favouritetoy#>', [[0, 0]]]],
                     [],[],
                     32, 32, 1, (id) => {
-                        itemsGroup.create(i.x - 40, i.y + 64, id);
+                        itemsGroup.create(i.x - 40, i.y + 96, id);
                     }
                 );
             });

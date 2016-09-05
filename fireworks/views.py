@@ -214,7 +214,7 @@ def index(request):
     # Children's room
 
     default("image", "friends_toy1", "/s/assets/demo/toys/toy_1.png")
-    default("image", "friends_toy2", "/s/assets/demo/toys/toy_1.png")
+    default("image", "friends_toy2", "/s/assets/demo/toys/toy_2.png")
 
     # School
 

@@ -156,18 +156,20 @@
                  "properties":
                     {
                      "AI":"baby",
-                     "type":"walking-baby"
+                     "data":"[\"friend1_skin_color\", \"friend1_eye_color\", \"friend1_clothes_color\", \"friend1_eye_number\", \"friend1_ear_number\", \"friend1_nose_number\", \"friend1_mouth_number\", \"friend1_accessories_number\", \"friend1_hair\"]",
+                     "type":"baby"
                     },
                  "propertytypes":
                     {
                      "AI":"string",
+                     "data":"string",
                      "type":"string"
                     },
                  "rotation":0,
                  "type":"NPC",
                  "visible":true,
                  "width":64,
-                 "x":832,
+                 "x":896,
                  "y":960
                 }, 
                 {
@@ -178,11 +180,13 @@
                  "properties":
                     {
                      "AI":"baby",
+                     "data":"",
                      "type":"baby"
                     },
                  "propertytypes":
                     {
                      "AI":"string",
+                     "data":"string",
                      "type":"string"
                     },
                  "rotation":0,
