@@ -15,6 +15,8 @@ var selectedTool;
 
 var drawings = {};
 
+var undoQueue = [];
+
 const tools = {
     pencil(x, y) {
         canvasContext.fillStyle = selectedColour;
@@ -268,7 +270,7 @@ module.exports = {
         const colourContainer = container.querySelector(".colours");
         colourContainer.innerHTML = "";
         _.each([
-                "#000000",
+                "#000001",
                 "#505050",
                 "#A0A0A0",
                 "#8E8E8E",
@@ -495,7 +497,7 @@ module.exports = {
             move(e);
         });
 
-        selectColour("#000000");
+        selectColour("#000001");
         selectTool("pencil");
     },
 
