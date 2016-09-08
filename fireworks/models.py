@@ -19,6 +19,7 @@ class Character(models.Model):
     """Represents a character who has a set of stored behaviour and a parent."""
     parent = models.ForeignKey('self', related_name="children", null=True)
     complete = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False)
 
 
 class Image(models.Model):

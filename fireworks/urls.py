@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^info$', views.info, name='info'),
     url(r'^detail/(?P<pk>.+)$', views.detail, name='detail'),
+    url(r'^block/(?P<pk>.+)$', views.block, name='block'),
     url(r'^newplayer$', views.startupload, name='startupload'),
     url(r'^image/(?P<uploadid>.+)$', views.uploadimage,
         name='uploadimage'),

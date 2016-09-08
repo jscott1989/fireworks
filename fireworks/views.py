@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 from . import models
 from django.db.models import Count
@@ -6,7 +6,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import random
 from django.conf import settings
-from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from urllib.request import urlopen
 
@@ -19,6 +18,12 @@ def detail(request, pk):
     character = models.Character.objects.get(pk=pk)
     return render(request, "detail.html", {"character": character})
 
+def block(request, pk):
+    character = models.Character.objects.get(pk=pk)
+    character.blocked = not character.blocked
+    character.save()
+    return redirect("info")
+
 def index(request):
     sofar = models.Character.objects.filter(complete=True).count()
     data = {
@@ -28,7 +33,7 @@ def index(request):
         "image": {},
         "sound": {}
         }
-    lowest_children = [l for l in models.Character.objects.filter(complete=True).annotate(num_children=Count('children')).order_by("num_children")]
+    lowest_children = [l for l in models.Character.objects.filter(complete=True, blocked=False).annotate(num_children=Count('children')).order_by("num_children")]
 
     def default(category, key, value):
         if key not in data[category] or data[category][key] is None:
@@ -145,7 +150,7 @@ def index(request):
     # Next, try to use people who haven't completed but have provided enough information
     if (len(roles_to_fill) > 0):
         # We have no more completed people to use, find uncompleted people with the greatest contribution and use them
-        incomplete = [l for l in models.Character.objects.filter(complete=False)]
+        incomplete = [l for l in models.Character.objects.filter(complete=False, blocked=False)]
 
         incomplete = sorted(incomplete, key=lambda i : i.images.count() + i.sounds.count(), reverse=True)
         if len(incomplete) > 0:
